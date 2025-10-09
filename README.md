@@ -10,7 +10,7 @@ The player skis down an infinite slope, avoids obstacles, and collects points fo
 
 ## 👥 Team
 - Robin Tomšů  
-- [Teammate Name]
+- David Surga
 
 ---
 
