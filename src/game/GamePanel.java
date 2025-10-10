@@ -3,13 +3,24 @@ package game;
 import java.awt.*;
 import javax.swing.*;
 
-public class GamePanel extends JPanel {
-    private static final int WIDTH = 1000;
-    private static final int HEIGHT = 1080;
-    private Image backgroundImage;
+public class GamePanel extends JPanel implements Runnable {
+    
+    // SCREEN SETTINGS
+    final int originalTileSize = 16;    // 16x16 tile
+    final int scale = 3;
+
+    final int tileSize = originalTileSize * scale;  // 48x48 tile
+    final int maxScreenCol = 20;    // 320 px
+    final int maxScreenRow = 12;    // 180 px
+    final int screenWidth = tileSize * maxScreenCol;     // 960 px
+    final int screenHeight = tileSize * maxScreenRow;    // 576 px
+
+    final private Image backgroundImage;
+
+    Thread gameThread;
 
     public GamePanel() {
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setPreferredSize(new Dimension(screenWidth, screenHeight));
         setFocusable(true);
         requestFocusInWindow();
 
@@ -19,12 +30,40 @@ public class GamePanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+
         super.paintComponent(g);
 
+        Graphics2D g2 = (Graphics2D)g;
+
+        
 
         // Draw the background image
         if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            g2.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
     }
     }
+
+    protected void update() {
+
+    }
+
+    public void startGameThread() {
+
+        gameThread = new Thread(this);
+        gameThread.start();
+    }
+
+    @Override
+    public void run() {
+        while (gameThread != null) {
+
+            // update game loop
+            update();
+
+            // redraw the screen
+            repaint();
+        }
+
+    }
+
 }

@@ -4,17 +4,21 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
+
         SwingUtilities.invokeLater(() -> {
+
             JFrame window = new JFrame("Downhill Ski");
             window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            window.setResizable(false);
+            window.setResizable(true);
 
-            GamePanel panel = new GamePanel();
+            GamePanel gamePanel = new GamePanel();
             
-            window.setContentPane(panel);
+            window.setContentPane(gamePanel);
             window.pack();                        // sizes window to panel
             window.setLocationRelativeTo(null);   // centers on screen
             window.setVisible(true);
+
+            gamePanel.startGameThread();
         });
     }
 }
