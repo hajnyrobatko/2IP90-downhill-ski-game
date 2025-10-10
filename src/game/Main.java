@@ -12,13 +12,13 @@ public class Main {
             window.setResizable(true);
 
             GamePanel gamePanel = new GamePanel();
-            
+
             window.setContentPane(gamePanel);
             window.pack();                        // sizes window to panel
             window.setLocationRelativeTo(null);   // centers on screen
             window.setVisible(true);
 
-            gamePanel.startGameThread();
+            gamePanel.startGameThread(); //lllll
         });
     }
 }
