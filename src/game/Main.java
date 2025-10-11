@@ -7,9 +7,10 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
 
-            JFrame window = new JFrame("Downhill Ski");
+            JFrame window = new JFrame("Downhill OG");
             window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             window.setResizable(true);
+
 
             GamePanel gamePanel = new GamePanel();
 

@@ -1,0 +1,82 @@
+package entity;
+
+import game.GamePanel;
+import game.KeyHandler;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+public class Player extends Entity{
+    
+    GamePanel gp;
+    KeyHandler keyH;
+
+    public Player(GamePanel gp, KeyHandler keyH) {
+
+        this.gp = gp;
+        this.keyH = keyH;
+
+        setDefaultValues();
+        getPlayerImage();
+    }
+
+    public void setDefaultValues() {
+
+        x = 100;
+        y = 100;
+        speed = 4;
+        direction = "straight";
+    }
+
+    public void getPlayerImage() {
+        
+        try {
+            straight = ImageIO.read(getClass().getResourceAsStream("/assets/images/skier/skier-straight.png"));
+            left = ImageIO.read(getClass().getResourceAsStream("/assets/images/skier/skier-turn-left.png"));
+            right = ImageIO.read(getClass().getResourceAsStream("/assets/images/skier/skier-turn-right.png"));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void update () {
+
+        if (keyH.leftPressed == true) {
+            direction = "left";
+            x -= speed;
+        }
+
+        else if (keyH.rightPressed == true) {
+            direction = "right";
+            x += speed;
+        }
+
+        else if ((keyH.rightPressed == false) && (keyH.leftPressed == false)) {
+            direction = "straight";
+        }
+    }
+
+    public void draw(Graphics2D g2) {
+        
+        BufferedImage image = null;
+
+        switch (direction) {
+            case "left":
+                image = left;
+                break;
+
+            case "right":
+                image = right;
+                break;
+
+            case "straight":
+                image = straight;
+                break; 
+        }
+
+        g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+
+    }
+}
+
