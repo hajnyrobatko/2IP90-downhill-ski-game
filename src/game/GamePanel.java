@@ -5,27 +5,28 @@ import java.awt.*;
 import javax.swing.*;
 
 public class GamePanel extends JPanel implements Runnable {
-    
+
     // SCREEN SETTINGS
-    final int originalTileSize = 32;    // 32x32 tile
+    final int originalTileSize = 32; // 32x32 tile
     final int scale = 3;
 
-    public final int tileSize = originalTileSize * scale;   // 96px
-    final int maxScreenCol = 20;    
-    final int maxScreenRow = 11;    
-    final int screenWidth = tileSize * maxScreenCol;    // 1920 px
-    final int screenHeight = tileSize * maxScreenRow;    // 1056 px
+    public final int tileSize = originalTileSize * scale; // 96px
+    final int maxScreenCol = 20;
+    final int maxScreenRow = 11;
+    final int screenWidth = tileSize * maxScreenCol; // 1920 px
+    final int screenHeight = tileSize * maxScreenRow; // 1056 px
 
-    final private Image backgroundImage;
+    final int originalWidth = maxScreenCol * originalTileSize; // 640 px - background size
+    final int originalHeight = maxScreenRow * originalTileSize; // 352 px - background size
 
     // FPS
-
     int FPS = 60;
 
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
     Player player = new Player(this, keyH);
 
+    private Background background;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -34,8 +35,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
         this.requestFocusInWindow();
 
-        // Load background image
-        backgroundImage = new ImageIcon(getClass().getResource("/assets/images/background-test.jpg")).getImage();
+        background = new Background(this);
+
     }
 
     @Override
@@ -43,14 +44,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         super.paintComponent(g);
 
-        Graphics2D g2 = (Graphics2D)g;
+        Graphics2D g2 = (Graphics2D) g;
 
-
-        // Draw the background image
-        if (backgroundImage != null) {
-            g2.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-        }
-
+        background.draw(g2);
         player.draw(g2);
 
         g2.dispose();
@@ -58,6 +54,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     protected void update() {
+        background.update();
         player.update();
     }
 
@@ -70,7 +67,7 @@ public class GamePanel extends JPanel implements Runnable {
     @Override
     public void run() {
 
-        double drawInterval = 1000000000/FPS;  // 0.1666 seconds
+        double drawInterval = 1000000000 / FPS; // 0.1666 seconds
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
@@ -99,10 +96,6 @@ public class GamePanel extends JPanel implements Runnable {
                 drawCount = 0;
                 timer = 0;
             }
-
-
         }
-
     }
-
 }

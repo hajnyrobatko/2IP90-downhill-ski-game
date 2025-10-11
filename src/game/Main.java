@@ -11,15 +11,14 @@ public class Main {
             window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             window.setResizable(true);
 
-
             GamePanel gamePanel = new GamePanel();
 
             window.setContentPane(gamePanel);
-            window.pack();                        // sizes window to panel
-            window.setLocationRelativeTo(null);   // centers on screen
+            window.pack(); // sizes window to panel
+            window.setLocationRelativeTo(null); // centers on screen
             window.setVisible(true);
 
-            gamePanel.startGameThread(); //lllll
+            gamePanel.startGameThread(); // lllll
         });
     }
 }
