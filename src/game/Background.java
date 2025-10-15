@@ -18,7 +18,7 @@ public class Background {
         setDefaultValues();
 
         try {
-            background = ImageIO.read(getClass().getResourceAsStream("/assets/images/background-test.png"));
+            background = ImageIO.read(getClass().getResourceAsStream("/assets/images/background-image.png"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -27,7 +27,7 @@ public class Background {
 
     public void setDefaultValues() {
         scrollDefault = 0;
-        scrollSpeed = 2;
+        scrollSpeed = 1;
     }
 
     public void update() {

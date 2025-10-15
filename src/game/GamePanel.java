@@ -7,8 +7,8 @@ import javax.swing.*;
 public class GamePanel extends JPanel implements Runnable {
 
     // SCREEN SETTINGS
-    final int originalTileSize = 32; // 32x32 tile
-    final int scale = 3;
+    final int originalTileSize = 16; // 32x32 tile
+    final int scale = 6;
 
     public final int tileSize = originalTileSize * scale; // 96px
     final int maxScreenCol = 20;
