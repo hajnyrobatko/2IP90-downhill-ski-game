@@ -29,7 +29,7 @@ public class Player extends Entity {
         y = 500;
         speed = 8;
         direction = "straight";
-        angle = 90;
+        angle = 0;
     }
 
     public void getPlayerImage() {
@@ -63,7 +63,7 @@ public class Player extends Entity {
 
     public void draw(Graphics2D g2) {
 
-        BufferedImage image = null;
+        BufferedImage image = straight;
         x = x + change_x;
         System.out.println(x);
         g2.rotate(Math.toRadians(angle), x, y);
