@@ -42,7 +42,11 @@ public class GamePanel extends JPanel implements Runnable {
         this.requestFocusInWindow();
 
         background = new Background(this);
+    }
 
+    public void setupGame() {
+
+        spawner.setObject();
     }
 
     @Override
@@ -53,7 +57,15 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
 
         background.draw(g2);
+
+        for(int i = 0; i < obj.length; i++) {
+            if(obj[i] != null) {
+                obj[i].draw(g2, this);
+            }
+        }
+
         player.draw(g2);
+
 
         g2.dispose();
 

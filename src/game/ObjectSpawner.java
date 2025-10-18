@@ -1,8 +1,7 @@
 package game;
 
-import java.util.Random;
-
 import gameobjects.OBJ_GoldCoin;
+import java.util.Random;
 
 public class ObjectSpawner {
 
@@ -19,11 +18,15 @@ public class ObjectSpawner {
     }
 
     public void setObject() {
-        gp.obj[0] = new OBJ_GoldCoin();
-
         int objectWidth = gp.tileSize;
+
+        gp.obj[0] = new OBJ_GoldCoin();
         gp.obj[0].worldX = randomX(objectWidth);
-        gp.obj[0].worldY = randomY(-200, -50);
+        gp.obj[0].worldY = randomY(0, 0);
+
+        gp.obj[1] = new OBJ_GoldCoin();
+        gp.obj[1].worldX = randomX(objectWidth);
+        gp.obj[1].worldY = randomY(600, 800);
 
     }
 
