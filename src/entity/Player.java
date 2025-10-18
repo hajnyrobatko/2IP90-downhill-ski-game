@@ -44,6 +44,7 @@ public class Player extends Entity {
     }
 
     public void update() {
+        int dx = 0;
 
         if (keyH.leftPressed == true) {
             direction = "left";
@@ -61,6 +62,8 @@ public class Player extends Entity {
             direction = "straight";
             angle = 0;
         }
+
+        x = gp.border.clampX(x, gp.tileSize);
     }
 
     public void draw(Graphics2D g2) {

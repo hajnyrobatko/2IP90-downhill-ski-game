@@ -28,6 +28,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     private Background background;
 
+    public CollisionBorder border = new CollisionBorder(300, 1000);
+
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setDoubleBuffered(true);
