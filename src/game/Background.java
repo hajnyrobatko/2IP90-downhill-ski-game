@@ -18,7 +18,7 @@ public class Background {
         setDefaultValues();
 
         try {
-            background = ImageIO.read(getClass().getResourceAsStream("/assets/images/background-image.png"));
+            background = ImageIO.read(getClass().getResourceAsStream("/assets/images/background/background-image.png"));
 
         } catch (Exception e) {
             e.printStackTrace();

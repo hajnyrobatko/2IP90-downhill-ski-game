@@ -1,6 +1,7 @@
 package game;
 
 import entity.Player;
+import gameobjects.SuperObject;
 import java.awt.*;
 import javax.swing.*;
 
@@ -29,6 +30,9 @@ public class GamePanel extends JPanel implements Runnable {
     private Background background;
 
     public CollisionBorder border = new CollisionBorder(300, 1000);
+    public ObjectSpawner spawner = new ObjectSpawner(300, 1000, this);
+
+    public SuperObject obj[] = new SuperObject[10]; 
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
