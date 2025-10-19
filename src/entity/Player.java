@@ -84,8 +84,16 @@ public class Player extends Entity {
                 break;
         }
 
-        g2.rotate(Math.toRadians(angle), x, y);
+
+        // Save original transform
+        var oldTransform = g2.getTransform();
+
+        // Rotate only the player
+        g2.rotate(Math.toRadians(angle), x + gp.tileSize / 2.0, y + gp.tileSize / 2.0);
         g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+
+        // Restore transform so coins aren’t affected
+        g2.setTransform(oldTransform);
 
     }
 }

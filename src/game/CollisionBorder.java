@@ -2,15 +2,15 @@ package game;
 
 public class CollisionBorder {
 
-    private int leftLine;
-    private int rightLine;
+    private final int leftLine;
+    private final int rightLine;
 
     public CollisionBorder(int leftLine, int rightLine) {
         this.leftLine = leftLine;
         this.rightLine = rightLine;
     }
 
-    // Makes sure the player doesn't go past left/right walls
+    // Makes sure the player does not go past left/right walls
 
     public int clampX(int x, int width) {
         // stop left edge

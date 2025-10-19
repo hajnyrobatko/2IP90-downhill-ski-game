@@ -51,4 +51,8 @@ public class Background {
         g2.drawImage(background, 0, mainBgY, gp.screenWidth, mainBgY + gp.screenHeight, 0, 0, gp.originalWidth,
                 gp.originalHeight, null);
     }
+
+    public int getScrollSpeed() {
+        return scrollSpeed;
+    }
 }

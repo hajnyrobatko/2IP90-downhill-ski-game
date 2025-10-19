@@ -1,7 +1,6 @@
 package game;
 
 import entity.Player;
-import gameobjects.SuperObject;
 import java.awt.*;
 import javax.swing.*;
 
@@ -25,14 +24,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+    
     Player player = new Player(this, keyH);
 
-    private Background background;
-
+    private Background background = new Background(this);
     public CollisionBorder border = new CollisionBorder(300, 1000);
-    public ObjectSpawner spawner = new ObjectSpawner(300, 1000, this);
+    private ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollSpeed() * scale);
 
-    public SuperObject obj[] = new SuperObject[10]; 
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -40,14 +38,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);
         this.setFocusable(true);
         this.requestFocusInWindow();
-
-        background = new Background(this);
     }
 
-    public void setupGame() {
-
-        spawner.setObject();
-    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -58,13 +50,10 @@ public class GamePanel extends JPanel implements Runnable {
 
         background.draw(g2);
 
-        for(int i = 0; i < obj.length; i++) {
-            if(obj[i] != null) {
-                obj[i].draw(g2, this);
-            }
-        }
+
 
         player.draw(g2);
+        spawner.draw(g2);
 
 
         g2.dispose();
@@ -74,6 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
     protected void update() {
         background.update();
         player.update();
+        spawner.update(player.x, player.y, tileSize, tileSize);
     }
 
     public void startGameThread() {
