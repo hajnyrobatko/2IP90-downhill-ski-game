@@ -3,6 +3,7 @@ package game;
 import entity.Player;
 import java.awt.*;
 import javax.swing.*;
+import objects.ObjectSpawner;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -24,13 +25,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
-    
+
     Player player = new Player(this, keyH);
 
     private Background background = new Background(this);
     public CollisionBorder border = new CollisionBorder(300, 1000);
     private ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollSpeed() * scale);
-
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -40,7 +40,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.requestFocusInWindow();
     }
 
-
     @Override
     protected void paintComponent(Graphics g) {
 
@@ -49,13 +48,8 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
 
         background.draw(g2);
-
-
-
         player.draw(g2);
         spawner.draw(g2);
-
-
         g2.dispose();
 
     }
