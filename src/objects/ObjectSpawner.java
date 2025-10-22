@@ -1,6 +1,8 @@
 package objects;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,9 @@ public class ObjectSpawner {
     private final Random random = new Random();
 
     private final List<Obstacle> obstacles = new ArrayList<>();
-    private BufferedImage goldCoin, silverCoin;
+    private BufferedImage goldCoin, silverCoin, tree;
+
+    public boolean gameEnd = false;
 
     public int score = 0;
 
@@ -24,46 +28,48 @@ public class ObjectSpawner {
         this.leftLine = leftLine;
         this.rightLine = rightLine;
         this.screenHeight = screenHeight;
-        this.scrollSpeed = scrollSpeed;
+        this.scrollSpeed = scrollSpeed; // = 4
 
         loadImages();
     }
 
     private void loadImages() {
+
         try {
             goldCoin = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-1.png"));
             silverCoin = ImageIO
                     .read(getClass().getResourceAsStream("/assets/images/objects/silver-coin/silver-coin-1.png"));
+            tree = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/trees/tree-4.png"));
+
+            // scale tree
+            tree = new AffineTransformOp(AffineTransform.getScaleInstance(2.0, 2.0), AffineTransformOp.TYPE_BILINEAR)
+                    .filter(tree, null);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void spawnObject(int interval, String type, BufferedImage spawnObject) {
+
+        if (random.nextInt(interval) == 0) {
+            int x = randomX(spawnObject.getWidth());
+            int y = -spawnObject.getHeight(); // start above the screen
+            obstacles.add(new Obstacle(x, y, spawnObject, type));
+        }
+    }
+
     public void update(int playerX, int playerY, int playerWidth, int playerHeight) {
 
-        // spawn randomly gold Coins
-        if (random.nextInt(180) == 0) {
-
-            int x = randomX(goldCoin.getWidth());
-            int y = -goldCoin.getHeight(); // start above the screen
-
-            obstacles.add(new Obstacle(x, y, goldCoin, "goldCoin"));
-        }
-
-        // spawn randomly silver Coins
-        if (random.nextInt(80) == 0) {
-
-            int x = randomX(silverCoin.getWidth());
-            int y = -silverCoin.getHeight(); // start above the screen
-
-            obstacles.add(new Obstacle(x, y, silverCoin, "silverCoin"));
-        }
+        // spawn randomly
+        spawnObject(180, "goldCoin", goldCoin);
+        spawnObject(80, "silverCoin", silverCoin);
+        spawnObject(80, "tree", tree);
 
         // move down + check collisions
         for (int i = 0; i < obstacles.size(); i++) {
             Obstacle obstacle = obstacles.get(i);
-            obstacle.y += scrollSpeed;
+            obstacle.y += scrollSpeed; // plus effective speed
 
             boolean removeThis = false;
 
@@ -71,15 +77,17 @@ public class ObjectSpawner {
 
                 if ("goldCoin".equals(obstacle.getType())) {
                     score += 3;
+                    removeThis = true;
                     System.out.println("Score: " + score);
+
                 } else if ("silverCoin".equals(obstacle.getType())) {
                     score += 1;
+                    removeThis = true;
                     System.out.println("Score: " + score);
-                } else {
 
+                } else if ("tree".equals(obstacle.getType())) {
+                    gameEnd();
                 }
-
-                removeThis = true;
             }
 
             // remove off-screen obstacles
@@ -91,6 +99,11 @@ public class ObjectSpawner {
                 obstacles.remove(i--);
             }
         }
+    }
+
+    public boolean gameEnd() {
+        gameEnd = true;
+        return gameEnd;
     }
 
     public void draw(Graphics2D g) {

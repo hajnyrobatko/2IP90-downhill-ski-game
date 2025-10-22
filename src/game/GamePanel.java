@@ -30,7 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     private Background background = new Background(this);
     public CollisionBorder border = new CollisionBorder(300, 1000);
-    private ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollSpeed() * scale);
+    private ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollDefault() * scale);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -50,6 +50,12 @@ public class GamePanel extends JPanel implements Runnable {
         background.draw(g2);
         player.draw(g2);
         spawner.draw(g2);
+
+        // looping infinitely – fix ASAP, 
+        if (spawner.gameEnd == true) {
+            // TODO: game over screen
+        }
+
         g2.dispose();
 
     }

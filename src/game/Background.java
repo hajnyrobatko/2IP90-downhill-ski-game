@@ -26,8 +26,8 @@ public class Background {
     }
 
     public void setDefaultValues() {
-        scrollDefault = 0;
-        scrollSpeed = 1;
+        scrollDefault = 1;
+        scrollSpeed = 1; //plus effective speed
     }
 
     public void update() {
@@ -52,7 +52,7 @@ public class Background {
                 gp.originalHeight, null);
     }
 
-    public int getScrollSpeed() {
-        return scrollSpeed;
+    public int getScrollDefault() {
+        return scrollDefault;
     }
 }

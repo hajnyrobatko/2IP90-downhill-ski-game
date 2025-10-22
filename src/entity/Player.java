@@ -44,7 +44,6 @@ public class Player extends Entity {
     }
 
     public void update() {
-        int dx = 0;
 
         if (keyH.leftPressed == true) {
             direction = "left";
