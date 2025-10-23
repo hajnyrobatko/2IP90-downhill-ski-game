@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.imageio.ImageIO;
+import game.GamePanel;
 
 public class ObjectSpawner {
 
@@ -20,15 +21,18 @@ public class ObjectSpawner {
     private final List<Obstacle> obstacles = new ArrayList<>();
     private BufferedImage goldCoin, silverCoin, tree;
 
+    GamePanel gp;
+
     public boolean gameEnd = false;
 
     public int score = 0;
 
-    public ObjectSpawner(int leftLine, int rightLine, int screenHeight, double scrollSpeed) {
+    public ObjectSpawner(int leftLine, int rightLine, int screenHeight, double scrollSpeed, GamePanel gp) {
         this.leftLine = leftLine;
         this.rightLine = rightLine;
         this.screenHeight = screenHeight;
         this.scrollSpeed = scrollSpeed; // = 4
+        this.gp = gp;
 
         loadImages();
     }
@@ -76,18 +80,21 @@ public class ObjectSpawner {
             if (collidesWithPlayer(obstacle, playerX, playerY, playerWidth, playerHeight)) {
 
                 if ("goldCoin".equals(obstacle.getType())) {
+                    gp.playSE(1);
                     score += 3;
                     removeThis = true;
                     System.out.println("Score: " + score);
 
                 } else if ("silverCoin".equals(obstacle.getType())) {
+                    gp.playSE(1);
                     score += 1;
                     removeThis = true;
                     System.out.println("Score: " + score);
 
                 } else if ("tree".equals(obstacle.getType())) {
+                    gp.playSE(2);
                     gameEnd();
-                    
+
                 }
             }
 

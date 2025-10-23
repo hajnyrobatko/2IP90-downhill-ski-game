@@ -23,15 +23,16 @@ public class GamePanel extends JPanel implements Runnable {
     // FPS
     int FPS = 60;
 
-
+    // SYSTEM
     KeyHandler keyH = new KeyHandler();
+    Sound sound = new Sound();
     Thread gameThread;
-
-    Player player = new Player(this, keyH);
-
-    private Background background = new Background(this);
     public CollisionBorder border = new CollisionBorder(300, 1000);
-    private ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollDefault() * scale);
+    private Background background = new Background(this);
+
+    // ENTITY AND OBJECTS
+    Player player = new Player(this, keyH);
+    private ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollDefault() * scale, this);
 
     double effectiveSpeed;
 
@@ -41,6 +42,10 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);
         this.setFocusable(true);
         this.requestFocusInWindow();
+    }
+
+    public void setupGame() {
+        playMusic(0);
     }
 
     @Override
@@ -59,6 +64,21 @@ public class GamePanel extends JPanel implements Runnable {
             // TODO: game over screen
         }
         g2.dispose();
+    }
+
+    public void playMusic(int i) {
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+
+    public void stopMusic() {
+        sound.stop();
+    }
+
+    public void playSE(int i) {
+        sound.setFile(i);
+        sound.play();
     }
 
     protected void update() {
