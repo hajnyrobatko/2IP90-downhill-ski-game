@@ -4,11 +4,12 @@ import java.awt.image.BufferedImage;
 
     public class Obstacle {
 
-        int x, y, w, h;
+        int x, w, h;
+        double y;
         BufferedImage img;
         String type;
 
-        Obstacle(int x, int y, BufferedImage img, String type) {
+        Obstacle(int x, double y, BufferedImage img, String type) {
             this.x = x;
             this.y = y;
             this.img = img;

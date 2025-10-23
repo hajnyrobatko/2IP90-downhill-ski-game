@@ -23,6 +23,7 @@ public class GamePanel extends JPanel implements Runnable {
     // FPS
     int FPS = 60;
 
+
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
 
@@ -31,6 +32,8 @@ public class GamePanel extends JPanel implements Runnable {
     private Background background = new Background(this);
     public CollisionBorder border = new CollisionBorder(300, 1000);
     private ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollDefault() * scale);
+
+    double effectiveSpeed;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -55,15 +58,15 @@ public class GamePanel extends JPanel implements Runnable {
         if (spawner.gameEnd == true) {
             // TODO: game over screen
         }
-
         g2.dispose();
-
     }
 
     protected void update() {
-        background.update();
+        effectiveSpeed = (0.1*spawner.getScore()+2) * (Math.cos(Math.toRadians(player.getAngle())));
+
+        background.update(effectiveSpeed);
         player.update();
-        spawner.update(player.x, player.y, tileSize, tileSize);
+        spawner.update(player.x, player.y, tileSize, tileSize, effectiveSpeed);
     }
 
     public void startGameThread() {

@@ -47,18 +47,23 @@ public class Player extends Entity {
     public void update() {
 
         if (keyH.leftPressed == true) {
-            if (angle > -90){
+            if (angle > -70){
             angle -= 2;
+            direction = "right";
             }
         }
 
         else if (keyH.rightPressed == true) {
-            if (angle < 90){
+            if (angle < 70){
             angle += 2;
+            direction = "left";
             }
         }
 
-
+        else if (angle != 0) {
+            angle -= 0.5*(Math.abs(angle)/angle);
+            direction = "straight";
+        }
         x = gp.border.clampX(x, gp.tileSize);
     }
 
@@ -79,6 +84,7 @@ public class Player extends Entity {
                 image = straight;
                 break;
         }
+        
         change_x = (int)(10*(Math.sin(Math.toRadians(angle))));
         x = x + change_x;
         var oldTransform = g2.getTransform();
@@ -88,6 +94,9 @@ public class Player extends Entity {
 
         // Restore transform so coins aren’t affected
         g2.setTransform(oldTransform);
+    }
 
+    public int getAngle() {
+        return angle;
     }
 }
