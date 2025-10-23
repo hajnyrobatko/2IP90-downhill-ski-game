@@ -25,7 +25,7 @@ public class Player extends Entity {
 
     public void setDefaultValues() {
         change_x = 0;
-        x = 500;
+        x = 610;
         y = 500;
         speed = 8;
         direction = "straight";
@@ -57,17 +57,33 @@ public class Player extends Entity {
             angle += 5;
             }
         }
-        System.out.println((Math.sin(Math.toRadians(angle))));
-        change_x = (int)(10*(Math.sin(Math.toRadians(angle))));
     }
 
     public void draw(Graphics2D g2) {
 
-        BufferedImage image = straight;
+        BufferedImage image = null;
+
+        switch (direction) {
+            case "left":
+                image = left;
+                break;
+
+            case "right":
+                image = right;
+                break;
+
+            case "straight":
+                image = straight;
+                break;
+        }
+        change_x = (int)(10*(Math.sin(Math.toRadians(angle))));
         x = x + change_x;
-        System.out.println(x);
+
         g2.rotate(Math.toRadians(angle), x, y);
         g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
+
+        // Restore transform so coins aren’t affected
+        g2.setTransform(oldTransform);
 
     }
 }

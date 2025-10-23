@@ -18,7 +18,7 @@ public class Background {
         setDefaultValues();
 
         try {
-            background = ImageIO.read(getClass().getResourceAsStream("/assets/images/background-image.png"));
+            background = ImageIO.read(getClass().getResourceAsStream("/assets/images/background/background-image.png"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -26,8 +26,8 @@ public class Background {
     }
 
     public void setDefaultValues() {
-        scrollDefault = 0;
-        scrollSpeed = 1;
+        scrollDefault = 1;
+        scrollSpeed = 1; //plus effective speed
     }
 
     public void update() {
@@ -50,5 +50,9 @@ public class Background {
                 gp.originalHeight, null);
         g2.drawImage(background, 0, mainBgY, gp.screenWidth, mainBgY + gp.screenHeight, 0, 0, gp.originalWidth,
                 gp.originalHeight, null);
+    }
+
+    public int getScrollDefault() {
+        return scrollDefault;
     }
 }

@@ -3,30 +3,34 @@ package game;
 import entity.Player;
 import java.awt.*;
 import javax.swing.*;
+import objects.ObjectSpawner;
 
 public class GamePanel extends JPanel implements Runnable {
 
     // SCREEN SETTINGS
-    final int originalTileSize = 16; // 32x32 tile
-    final int scale = 6;
+    final int originalTileSize = 16; // 16x16 tile
+    final int scale = 4;
 
-    public final int tileSize = originalTileSize * scale; // 96px
+    public final int tileSize = originalTileSize * scale; // 64px
     final int maxScreenCol = 20;
     final int maxScreenRow = 11;
-    final int screenWidth = tileSize * maxScreenCol; // 1920 px
-    final int screenHeight = tileSize * maxScreenRow; // 1056 px
+    final int screenWidth = tileSize * maxScreenCol; // 1280 px
+    final int screenHeight = tileSize * maxScreenRow; // 704 px
 
-    final int originalWidth = maxScreenCol * originalTileSize; // 640 px - background size
-    final int originalHeight = maxScreenRow * originalTileSize; // 352 px - background size
+    final int originalWidth = maxScreenCol * originalTileSize; // 320 px - background size
+    final int originalHeight = maxScreenRow * originalTileSize; // 176 px - background size
 
     // FPS
     int FPS = 60;
 
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+
     Player player = new Player(this, keyH);
 
-    private Background background;
+    private Background background = new Background(this);
+    public CollisionBorder border = new CollisionBorder(300, 1000);
+    private ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollDefault() * scale);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -34,9 +38,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH);
         this.setFocusable(true);
         this.requestFocusInWindow();
-
-        background = new Background(this);
-
     }
 
     @Override
@@ -48,6 +49,12 @@ public class GamePanel extends JPanel implements Runnable {
 
         background.draw(g2);
         player.draw(g2);
+        spawner.draw(g2);
+
+        // looping infinitely – fix ASAP, 
+        if (spawner.gameEnd == true) {
+            // TODO: game over screen
+        }
 
         g2.dispose();
 
@@ -56,6 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
     protected void update() {
         background.update();
         player.update();
+        spawner.update(player.x, player.y, tileSize, tileSize);
     }
 
     public void startGameThread() {
