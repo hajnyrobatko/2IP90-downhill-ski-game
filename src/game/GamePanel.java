@@ -25,17 +25,20 @@ public class GamePanel extends JPanel implements Runnable {
 
     // SYSTEM
     KeyHandler keyH = new KeyHandler();
-    Sound sound = new Sound();
-    Thread gameThread;
+    Sound se = new Sound();
+    Sound music = new Sound();
     public CollisionBorder border = new CollisionBorder(300, 1000);
     private Background background = new Background(this);
+    Thread gameThread;
 
     // ENTITY AND OBJECTS
     Player player = new Player(this, keyH);
-    private ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollDefault() * scale, this);
+    public ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollDefault() * scale, this);
 
     double effectiveSpeed;
 
+    public UI ui = new UI(this);
+    
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setDoubleBuffered(true);
@@ -58,6 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
         background.draw(g2);
         player.draw(g2);
         spawner.draw(g2);
+        ui.draw(g2);
 
         // looping infinitely – fix ASAP, 
         if (spawner.gameEnd == true) {
@@ -67,18 +71,18 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void playMusic(int i) {
-        sound.setFile(i);
-        sound.play();
-        sound.loop();
+        music.setFile(i);
+        music.play();
+        music.loop();
     }
 
     public void stopMusic() {
-        sound.stop();
+        music.stop();
     }
 
     public void playSE(int i) {
-        sound.setFile(i);
-        sound.play();
+        se.setFile(i);
+        se.play();
     }
 
     protected void update() {

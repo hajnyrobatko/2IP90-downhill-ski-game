@@ -19,7 +19,7 @@ public class ObjectSpawner {
     private final Random random = new Random();
 
     private final List<Obstacle> obstacles = new ArrayList<>();
-    private BufferedImage goldCoin, silverCoin, tree;
+    private BufferedImage goldCoin, silverCoin, tree, goldCoinIcon;
 
     GamePanel gp;
 
@@ -41,6 +41,7 @@ public class ObjectSpawner {
 
         try {
             goldCoin = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-1.png"));
+            goldCoinIcon = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-icon.png"));
             silverCoin = ImageIO
                     .read(getClass().getResourceAsStream("/assets/images/objects/silver-coin/silver-coin-1.png"));
             tree = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/trees/tree-4.png"));
@@ -66,6 +67,9 @@ public class ObjectSpawner {
     public void update(int playerX, int playerY, int playerWidth, int playerHeight, double effectiveSpeed) {
 
         // spawn randomly
+
+        //TODO: if effective speed is less than something spawn this much and if more spawn more
+
         spawnObject(180, "goldCoin", goldCoin);
         spawnObject(80, "silverCoin", silverCoin);
         spawnObject(180, "tree", tree);
@@ -93,6 +97,7 @@ public class ObjectSpawner {
 
                 } else if ("tree".equals(obstacle.getType())) {
                     gp.playSE(2);
+                    gp.ui.showMessage("GAME OVER. YOU HAVE CRASHED!");
                     gameEnd();
 
                 }
@@ -118,10 +123,6 @@ public class ObjectSpawner {
         for (Obstacle o : obstacles) {
             g.drawImage(o.img, o.x, (int) o.y, null);
         }
-
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 24));
-        g.drawString("Score: " + score, 50, 50);
     }
 
     private boolean collidesWithPlayer(Obstacle obstacle, int playerX, int playerY, int playerWidth, int playerHeight) {
@@ -143,5 +144,9 @@ public class ObjectSpawner {
 
     public int getScore() {
         return score;
+    }
+
+    public BufferedImage getGoldCoinImage() {
+        return goldCoinIcon;
     }
 }
