@@ -10,8 +10,8 @@ public class Background {
     public BufferedImage background;
 
     // how much the screen moved
-    private int scrollDefault;
-    private int scrollSpeed;
+    private double scrollDefault;
+    private double scrollSpeed;
 
     public Background(GamePanel gp) {
         this.gp = gp;
@@ -27,13 +27,12 @@ public class Background {
 
     public void setDefaultValues() {
         scrollDefault = 1;
-        scrollSpeed = 1; //plus effective speed
     }
 
-    public void update() {
+    public void update(double effectiveSpeed) {
 
         // how much the screen moves every frame
-        scrollDefault += scrollSpeed;
+        scrollDefault += effectiveSpeed;
 
         // If scrolled through entire image, back to start
         if (scrollDefault >= gp.originalHeight)
@@ -43,16 +42,17 @@ public class Background {
     public void draw(Graphics2D g2) {
 
         // Compute where to draw the 2 images
-        int mainBgY = scrollDefault * gp.scale;
-        int topBgY = mainBgY - gp.screenHeight;
+        double mainBgY = scrollDefault * gp.scale;
+        double topBgY = mainBgY - gp.screenHeight;
 
-        g2.drawImage(background, 0, topBgY, gp.screenWidth, topBgY + gp.screenHeight, 0, 0, gp.originalWidth,
+
+        g2.drawImage(background, 0, (int) topBgY, gp.screenWidth, (int) topBgY + gp.screenHeight, 0, 0, gp.originalWidth,
                 gp.originalHeight, null);
-        g2.drawImage(background, 0, mainBgY, gp.screenWidth, mainBgY + gp.screenHeight, 0, 0, gp.originalWidth,
+        g2.drawImage(background, 0, (int) mainBgY, gp.screenWidth, (int) mainBgY + gp.screenHeight, 0, 0, gp.originalWidth,
                 gp.originalHeight, null);
     }
 
-    public int getScrollDefault() {
+    public double getScrollDefault() {
         return scrollDefault;
     }
 }

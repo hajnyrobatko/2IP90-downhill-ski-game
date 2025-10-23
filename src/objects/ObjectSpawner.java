@@ -14,7 +14,7 @@ public class ObjectSpawner {
     private final int leftLine;
     private final int rightLine;
     private final int screenHeight;
-    private final int scrollSpeed;
+    private final double scrollSpeed;
     private final Random random = new Random();
 
     private final List<Obstacle> obstacles = new ArrayList<>();
@@ -24,7 +24,7 @@ public class ObjectSpawner {
 
     public int score = 0;
 
-    public ObjectSpawner(int leftLine, int rightLine, int screenHeight, int scrollSpeed) {
+    public ObjectSpawner(int leftLine, int rightLine, int screenHeight, double scrollSpeed) {
         this.leftLine = leftLine;
         this.rightLine = rightLine;
         this.screenHeight = screenHeight;
@@ -59,18 +59,18 @@ public class ObjectSpawner {
         }
     }
 
-    public void update(int playerX, int playerY, int playerWidth, int playerHeight) {
+    public void update(int playerX, int playerY, int playerWidth, int playerHeight, double effectiveSpeed) {
 
         // spawn randomly
         spawnObject(180, "goldCoin", goldCoin);
         spawnObject(80, "silverCoin", silverCoin);
-        spawnObject(80, "tree", tree);
+        spawnObject(180, "tree", tree);
 
         // move down + check collisions
         for (int i = 0; i < obstacles.size(); i++) {
             Obstacle obstacle = obstacles.get(i);
-            obstacle.y += scrollSpeed; // plus effective speed
-
+            obstacle.y += this.scrollSpeed*(effectiveSpeed); // plus effective speed
+            
             boolean removeThis = false;
 
             if (collidesWithPlayer(obstacle, playerX, playerY, playerWidth, playerHeight)) {
@@ -87,6 +87,7 @@ public class ObjectSpawner {
 
                 } else if ("tree".equals(obstacle.getType())) {
                     gameEnd();
+                    
                 }
             }
 
@@ -108,7 +109,7 @@ public class ObjectSpawner {
 
     public void draw(Graphics2D g) {
         for (Obstacle o : obstacles) {
-            g.drawImage(o.img, o.x, o.y, null);
+            g.drawImage(o.img, o.x, (int) o.y, null);
         }
 
         g.setColor(Color.BLACK);
@@ -131,5 +132,9 @@ public class ObjectSpawner {
         int minX = leftLine;
         int maxX = rightLine - objectWidth;
         return random.nextInt(maxX - minX + 1) + minX;
+    }
+
+    public int getScore() {
+        return score;
     }
 }

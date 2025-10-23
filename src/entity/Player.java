@@ -47,16 +47,24 @@ public class Player extends Entity {
     public void update() {
 
         if (keyH.leftPressed == true) {
-            if (angle > -90){
-            angle -= 5;
+            if (angle > -70){
+            angle -= 2;
+            direction = "right";
             }
         }
 
         else if (keyH.rightPressed == true) {
-            if (angle < 90){
-            angle += 5;
+            if (angle < 70){
+            angle += 2;
+            direction = "left";
             }
         }
+
+        else if (angle != 0) {
+            angle -= 0.5*(Math.abs(angle)/angle);
+            direction = "straight";
+        }
+        x = gp.border.clampX(x, gp.tileSize);
     }
 
     public void draw(Graphics2D g2) {
@@ -76,14 +84,19 @@ public class Player extends Entity {
                 image = straight;
                 break;
         }
+        
         change_x = (int)(10*(Math.sin(Math.toRadians(angle))));
         x = x + change_x;
+        var oldTransform = g2.getTransform();
 
         g2.rotate(Math.toRadians(angle), x, y);
         g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
 
         // Restore transform so coins aren’t affected
         g2.setTransform(oldTransform);
+    }
 
+    public int getAngle() {
+        return angle;
     }
 }
