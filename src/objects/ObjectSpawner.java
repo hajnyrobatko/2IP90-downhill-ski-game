@@ -1,5 +1,6 @@
 package objects;
 
+import game.GamePanel;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -8,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.imageio.ImageIO;
-import game.GamePanel;
 
 public class ObjectSpawner {
 
@@ -40,10 +40,10 @@ public class ObjectSpawner {
     private void loadImages() {
 
         try {
-            goldCoin = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-1.png"));
+            goldCoin = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-5.png"));
             goldCoinIcon = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-icon.png"));
             silverCoin = ImageIO
-                    .read(getClass().getResourceAsStream("/assets/images/objects/silver-coin/silver-coin-1.png"));
+                    .read(getClass().getResourceAsStream("/assets/images/objects/silver-coin/silver-coin-5.png"));
             tree = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/trees/tree-4.png"));
 
             // scale tree
@@ -84,22 +84,23 @@ public class ObjectSpawner {
             if (collidesWithPlayer(obstacle, playerX, playerY, playerWidth, playerHeight)) {
 
                 if ("goldCoin".equals(obstacle.getType())) {
-                    gp.playSE(1);
                     score += 3;
+                    gp.playSE(1);
+                    gp.ui.showMessage("GOLD COIN! +3");
                     removeThis = true;
                     System.out.println("Score: " + score);
 
                 } else if ("silverCoin".equals(obstacle.getType())) {
-                    gp.playSE(1);
                     score += 1;
+                    gp.playSE(1);
+                    gp.ui.showMessage("SILVER COIN! +1");
                     removeThis = true;
                     System.out.println("Score: " + score);
 
                 } else if ("tree".equals(obstacle.getType())) {
+                    gp.ui.gameOver = true;
+                    gp.stopMusic();
                     gp.playSE(2);
-                    gp.ui.showMessage("GAME OVER. YOU HAVE CRASHED!");
-                    gameEnd();
-
                 }
             }
 
@@ -114,10 +115,6 @@ public class ObjectSpawner {
         }
     }
 
-    public boolean gameEnd() {
-        gameEnd = true;
-        return gameEnd;
-    }
 
     public void draw(Graphics2D g) {
         for (Obstacle o : obstacles) {

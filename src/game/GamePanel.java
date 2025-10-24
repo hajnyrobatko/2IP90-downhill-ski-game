@@ -63,10 +63,6 @@ public class GamePanel extends JPanel implements Runnable {
         spawner.draw(g2);
         ui.draw(g2);
 
-        // looping infinitely – fix ASAP, 
-        if (spawner.gameEnd == true) {
-            // TODO: game over screen
-        }
         g2.dispose();
     }
 
@@ -86,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     protected void update() {
-        effectiveSpeed = (0.1*spawner.getScore()+2) * (Math.cos(Math.toRadians(player.getAngle())));
+        effectiveSpeed = (0.05*spawner.getScore()+2) * (Math.cos(Math.toRadians(player.getAngle())));
 
         background.update(effectiveSpeed);
         player.update();
