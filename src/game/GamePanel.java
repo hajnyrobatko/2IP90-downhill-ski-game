@@ -45,6 +45,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int playState = 1;
     public final int pauseState = 2;
     public final int gameOverState = 3;
+    public final int optionsState = 4;
 
     public UI ui = new UI(this);
 
@@ -72,6 +73,14 @@ public class GamePanel extends JPanel implements Runnable {
             ui.draw(g2);
 
         // GAME SCREEN, PAUSE, ETC.
+        } else if (gameState == pauseState) {
+            background.draw(g2);
+            ui.draw(g2);
+            
+        } else if (gameState == optionsState) {
+            background.draw(g2);
+            ui.draw(g2);
+
         } else {
             background.draw(g2);
             player.draw(g2);
@@ -105,13 +114,15 @@ public class GamePanel extends JPanel implements Runnable {
             background.update(effectiveSpeed, 1);
             spawner.update(player.x, player.y, tileSize, tileSize, effectiveSpeed);
         }
-        if (gameState == pauseState) {
+        else if (gameState == pauseState) {
             // TODO: implement
         }
 
-        if (gameState == titleState) {
+        else if (gameState == titleState) {
             background.update(effectiveSpeed, 0.2);
-            // TODO: implement
+        }
+        else if (gameState == optionsState) {
+            background.update(effectiveSpeed, 0.2);
         }
 
     }
