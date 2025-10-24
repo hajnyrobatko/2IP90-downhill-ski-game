@@ -125,13 +125,13 @@ public class Player extends Entity {
                 break;
         }
 
-        var oldTransform = g2.getTransform();
+        int cx = x + gp.tileSize / 2;
+        int cy = y + gp.tileSize / 2;
 
-        g2.rotate(Math.toRadians(angle), x, y);
+        var old = g2.getTransform();
+        g2.rotate(Math.toRadians(angle), cx, cy);
         g2.drawImage(image, x, y, gp.tileSize, gp.tileSize, null);
-
-        // Restore transform so coins aren’t affected
-        g2.setTransform(oldTransform);
+        g2.setTransform(old);
     }
 
     public int getAngle() {

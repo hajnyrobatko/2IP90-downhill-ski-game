@@ -77,11 +77,11 @@ public class GamePanel extends JPanel implements Runnable {
             background.draw(g2);
             ui.draw(g2);
 
-        // GAME SCREEN, PAUSE, ETC.
+            // GAME SCREEN, PAUSE, ETC.
         } else if (gameState == pauseState) {
             background.draw(g2);
             ui.draw(g2);
-            
+
         } else if (gameState == optionsState) {
             background.draw(g2);
             ui.draw(g2);
@@ -112,20 +112,19 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     protected void update() {
-        effectiveSpeed = (speedMultiplier * spawner.getScore() + baseSpeed) * (Math.cos(Math.toRadians(player.getAngle())));
+        effectiveSpeed = (speedMultiplier * spawner.getScore() + baseSpeed)
+                * (Math.cos(Math.toRadians(player.getAngle())));
 
         if (gameState == playState) {
             player.update();
             background.update(effectiveSpeed, 1);
             spawner.update(player.x, player.y, tileSize, tileSize, effectiveSpeed);
-        }
-        else if (gameState == pauseState) {
+        } else if (gameState == pauseState) {
         }
 
         else if (gameState == titleState) {
             background.update(effectiveSpeed, 0.2);
-        }
-        else if (gameState == optionsState) {
+        } else if (gameState == optionsState) {
             background.update(effectiveSpeed, 0.2);
         }
     }
@@ -138,7 +137,7 @@ public class GamePanel extends JPanel implements Runnable {
                 speedMultiplier = 0.03;
                 baseSpeed = 1.5;
                 break;
-                // default
+            // default
             case "Medium":
                 speedMultiplier = 0.05;
                 baseSpeed = 2;
@@ -160,6 +159,8 @@ public class GamePanel extends JPanel implements Runnable {
         if (ui.gameOver) {
             player.setDefaultValues();
             background.setDefaultValues();
+            ui.playTime = 0;
+            ui.commandNum = 0;
             effectiveSpeed = 0;
             ui.gameOver = false;
             spawner.resetObstaclesAndScore();
@@ -170,30 +171,32 @@ public class GamePanel extends JPanel implements Runnable {
     @Override
     public void run() {
 
-        double drawInterval = 1000000000 / FPS; // 0.1666 seconds
+        double drawInterval = 1000000000.0 / FPS; // ms per frame
         double delta = 0;
         long lastTime = System.nanoTime();
-        long currentTime;
         long timer = 0;
         int drawCount = 0;
 
         while (gameThread != null) {
 
-            currentTime = System.nanoTime();
-
+            long currentTime = System.nanoTime();
             delta += (currentTime - lastTime) / drawInterval;
             timer += (currentTime - lastTime);
             lastTime = currentTime;
 
             if (delta >= 1) {
-                // update game loop
                 update();
-                // redraw the screen
                 repaint();
                 delta--;
                 drawCount++;
+            } else {
+                try {
+                    Thread.sleep(1); // ~1ms nap
+                } catch (InterruptedException e) {
+                }
             }
 
+            // FPS counter once per second
             if (timer >= 1000000000) {
                 System.out.println("FPS: " + drawCount);
                 drawCount = 0;
