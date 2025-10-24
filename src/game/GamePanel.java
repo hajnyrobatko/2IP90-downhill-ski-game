@@ -191,7 +191,7 @@ public class GamePanel extends JPanel implements Runnable {
                 drawCount++;
             } else {
                 try {
-                    Thread.sleep(1); // ~1ms nap
+                    Thread.sleep(1); // 1ms nap
                 } catch (InterruptedException e) {
                 }
             }
