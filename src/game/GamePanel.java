@@ -187,7 +187,6 @@ public class GamePanel extends JPanel implements Runnable {
             if (delta >= 1) {
                 update();
                 repaint();
-                delta--;
                 drawCount++;
             } else {
                 try {
