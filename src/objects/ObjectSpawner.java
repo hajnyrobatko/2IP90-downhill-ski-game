@@ -1,5 +1,6 @@
 package objects;
 
+import game.GamePanel;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
@@ -18,17 +19,17 @@ public class ObjectSpawner {
     private final Random random = new Random();
 
     private final List<Obstacle> obstacles = new ArrayList<>();
-    private BufferedImage goldCoin, silverCoin, tree;
+    private BufferedImage goldCoin, silverCoin, tree, goldCoinIcon;
 
-    public boolean gameEnd = false;
-
+    GamePanel gp;
     public int score = 0;
 
-    public ObjectSpawner(int leftLine, int rightLine, int screenHeight, double scrollSpeed) {
+    public ObjectSpawner(int leftLine, int rightLine, int screenHeight, double scrollSpeed, GamePanel gp) {
         this.leftLine = leftLine;
         this.rightLine = rightLine;
         this.screenHeight = screenHeight;
         this.scrollSpeed = scrollSpeed; // = 4
+        this.gp = gp;
 
         loadImages();
     }
@@ -36,9 +37,11 @@ public class ObjectSpawner {
     private void loadImages() {
 
         try {
-            goldCoin = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-1.png"));
+            goldCoin = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-5.png"));
+            goldCoinIcon = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-icon.png"));
             silverCoin = ImageIO
-                    .read(getClass().getResourceAsStream("/assets/images/objects/silver-coin/silver-coin-1.png"));
+                    .read(getClass().getResourceAsStream("/assets/images/objects/silver-coin/silver-coin-5.png"));
             tree = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/trees/tree-4.png"));
 
             // scale tree
@@ -62,32 +65,57 @@ public class ObjectSpawner {
     public void update(int playerX, int playerY, int playerWidth, int playerHeight, double effectiveSpeed) {
 
         // spawn randomly
-        spawnObject(180, "goldCoin", goldCoin);
-        spawnObject(80, "silverCoin", silverCoin);
-        spawnObject(180, "tree", tree);
+        String difficulty = gp.ui.getCurrentDifficulty();
+
+        switch (difficulty) {
+            case "Easy":
+                spawnObject(120, "goldCoin", goldCoin);
+                spawnObject(60, "silverCoin", silverCoin);
+                spawnObject(220, "tree", tree);
+                break;
+
+            // default
+            case "Medium":
+                spawnObject(180, "goldCoin", goldCoin);
+                spawnObject(80, "silverCoin", silverCoin);
+                spawnObject(180, "tree", tree);
+
+                break;
+            case "Pro":
+                spawnObject(60, "goldCoin", goldCoin);
+                spawnObject(60, "silverCoin", silverCoin);
+                spawnObject(30, "tree", tree);
+                break;
+        }
 
         // move down + check collisions
         for (int i = 0; i < obstacles.size(); i++) {
             Obstacle obstacle = obstacles.get(i);
-            obstacle.y += this.scrollSpeed*(effectiveSpeed); // plus effective speed
-            
+            obstacle.y += this.scrollSpeed * (effectiveSpeed); // plus effective speed
+
             boolean removeThis = false;
 
             if (collidesWithPlayer(obstacle, playerX, playerY, playerWidth, playerHeight)) {
 
                 if ("goldCoin".equals(obstacle.getType())) {
                     score += 3;
+                    gp.playSE(1);
+                    gp.ui.showMessage("GOLD COIN! +3");
                     removeThis = true;
                     System.out.println("Score: " + score);
 
                 } else if ("silverCoin".equals(obstacle.getType())) {
                     score += 1;
+                    gp.playSE(1);
+                    gp.ui.showMessage("SILVER COIN! +1");
                     removeThis = true;
                     System.out.println("Score: " + score);
 
                 } else if ("tree".equals(obstacle.getType())) {
-                    gameEnd();
-                    
+                    gp.ui.gameOver = true;
+                    gp.gameState = gp.gameOverState;
+                    gp.stopMusic();
+                    gp.playSE(2);
                 }
             }
 
@@ -102,19 +130,10 @@ public class ObjectSpawner {
         }
     }
 
-    public boolean gameEnd() {
-        gameEnd = true;
-        return gameEnd;
-    }
-
     public void draw(Graphics2D g) {
         for (Obstacle o : obstacles) {
             g.drawImage(o.img, o.x, (int) o.y, null);
         }
-
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 24));
-        g.drawString("Score: " + score, 50, 50);
     }
 
     private boolean collidesWithPlayer(Obstacle obstacle, int playerX, int playerY, int playerWidth, int playerHeight) {
@@ -134,7 +153,16 @@ public class ObjectSpawner {
         return random.nextInt(maxX - minX + 1) + minX;
     }
 
+    public void resetObstaclesAndScore() {
+        this.obstacles.clear();
+        this.score = 0;
+    }
+
     public int getScore() {
         return score;
+    }
+
+    public BufferedImage getGoldCoinImage() {
+        return goldCoinIcon;
     }
 }

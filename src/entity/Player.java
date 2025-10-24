@@ -6,13 +6,10 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-
 public class Player extends Entity {
 
     GamePanel gp;
     KeyHandler keyH;
-
-
 
     public Player(GamePanel gp, KeyHandler keyH) {
 
@@ -35,35 +32,78 @@ public class Player extends Entity {
     public void getPlayerImage() {
 
         try {
-            straight = ImageIO.read(getClass().getResourceAsStream("/assets/images/skier/skier-straight.png"));
-            left = ImageIO.read(getClass().getResourceAsStream("/assets/images/skier/skier-turn-left.png"));
-            right = ImageIO.read(getClass().getResourceAsStream("/assets/images/skier/skier-turn-right.png"));
+            straightDefault = ImageIO.read(
+                    getClass().getResourceAsStream("/assets/images/skier/skier-default/skier-default-straight.png"));
+            leftDefault = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-default/skier-default-left.png"));
+            rightDefault = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-default/skier-default-right.png"));
+
+            straightDune = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-dune/skier-dune-straight.png"));
+            leftDune = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-dune/skier-dune-left.png"));
+            rightDune = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-dune/skier-dune-right.png"));
+
+            straightNeon = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-neon/skier-neon-straight.png"));
+            leftNeon = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-neon/skier-neon-left.png"));
+            rightNeon = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-neon/skier-neon-right.png"));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void setSkin() {
+        String skinName = gp.ui.getCurrentSkinName();
+
+        switch (skinName) {
+            case "Default":
+                straight = straightDefault;
+                left = leftDefault;
+                right = rightDefault;
+                break;
+            case "Dune":
+                straight = straightDune;
+                left = leftDune;
+                right = rightDune;
+                break;
+            case "Neon":
+                straight = straightNeon;
+                left = leftNeon;
+                right = rightNeon;
+                break;
+        }
+    }
+
     public void update() {
 
         if (keyH.leftPressed == true) {
-            if (angle > -70){
-            angle -= 2;
-            direction = "right";
+            if (angle > -70) {
+                angle -= 2;
+                direction = "right";
             }
         }
 
         else if (keyH.rightPressed == true) {
-            if (angle < 70){
-            angle += 2;
-            direction = "left";
+            if (angle < 70) {
+                angle += 2;
+                direction = "left";
             }
         }
 
         else if (angle != 0) {
-            angle -= 0.5*(Math.abs(angle)/angle);
+            angle -= 0.5 * (Math.abs(angle) / angle);
             direction = "straight";
         }
+
+        change_x = (int) (10 * (Math.sin(Math.toRadians(angle))));
+        x = x + change_x;
+
         x = gp.border.clampX(x, gp.tileSize);
     }
 
@@ -84,9 +124,7 @@ public class Player extends Entity {
                 image = straight;
                 break;
         }
-        
-        change_x = (int)(10*(Math.sin(Math.toRadians(angle))));
-        x = x + change_x;
+
         var oldTransform = g2.getTransform();
 
         g2.rotate(Math.toRadians(angle), x, y);

@@ -1,0 +1,489 @@
+package game;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DecimalFormat;
+
+public class UI {
+
+    GamePanel gp;
+    Graphics2D g2;
+    Font base_mono_reg, base_mono_bold;
+    Font mono_bold_78, mono_bold_58, mono_bold_48, mono_bold_24, mono_bold_30, mono_bold_20, mono_bold_35;
+    BufferedImage coinImage;
+    Color goldColor, black_50_op, darkBlue, darkBlue50;
+
+    public boolean messageOn = false;
+    public String message = "";
+    int messageCounter;
+    public boolean gameOver = false;
+    double playTime;
+    DecimalFormat dFormat = new DecimalFormat("#0.00");
+    public int commandNum = 0;
+
+    public String[] skinNames = { "Default", "Dune", "Neon" };
+    public int skinIndex = 0;
+
+    public String[] difficulty = { "Easy", "Medium", "Pro" };
+    public int difficultyIndex = 1;
+
+    int subState = 0;
+
+    public UI(GamePanel gp) {
+        this.gp = gp;
+        loadFonts();
+
+        mono_bold_78 = base_mono_bold.deriveFont(78f);
+        mono_bold_58 = base_mono_bold.deriveFont(58f);
+        mono_bold_48 = base_mono_bold.deriveFont(48f);
+        mono_bold_35 = base_mono_bold.deriveFont(35f);
+        mono_bold_24 = base_mono_bold.deriveFont(24f);
+        mono_bold_30 = base_mono_bold.deriveFont(30f);
+        mono_bold_20 = base_mono_bold.deriveFont(20f);
+
+        goldColor = new Color(245, 219, 56);
+        black_50_op = new Color(0, 0, 0, 128);
+        darkBlue = new Color(48, 67, 88);
+        darkBlue50 = new Color(48, 67, 88, 128);
+
+        coinImage = gp.spawner.getGoldCoinImage();
+
+        messageCounter = 0;
+
+    }
+
+    public void loadFonts() {
+        try {
+            InputStream is = getClass().getResourceAsStream("/assets/font/SpaceMono-Regular.ttf");
+            base_mono_reg = Font.createFont(Font.TRUETYPE_FONT, is);
+
+            is = getClass().getResourceAsStream("/assets/font/SpaceMono-Bold.ttf");
+            base_mono_bold = Font.createFont(Font.TRUETYPE_FONT, is);
+
+        } catch (FontFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showMessage(String text) {
+
+        message = text;
+        messageOn = true;
+    }
+
+    public void draw(Graphics2D g2) {
+
+        this.g2 = g2;
+
+        if (gp.gameState == gp.playState) {
+            gameRunning();
+        }
+        if (gp.gameState == gp.gameOverState) {
+            gameOver();
+        }
+
+        if (gp.gameState == gp.pauseState) {
+            drawPauseScreen();
+        }
+        if (gp.gameState == gp.titleState) {
+            drawTitleScreen();
+        }
+        if (gp.gameState == gp.optionsState) {
+            drawOptionsScreen();
+        }
+    }
+
+    public void drawOptionsScreen() {
+
+        String text;
+
+        g2.setColor(black_50_op);
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        // SUB WINDOW
+        int frameX = gp.tileSize * 6;
+        int frameY = gp.tileSize;
+        int frameWidth = gp.tileSize * 8;
+        int frameHeight = gp.tileSize * 9;
+
+        g2.setColor(darkBlue50);
+        g2.fillRect(frameX, frameY, frameWidth, frameHeight);
+
+        switch (subState) {
+            case 0:
+                optionsTop(frameX, frameY);
+                break;
+            case 1:
+                optionsControl(frameX, frameY);
+                break;
+        }
+
+        gp.keyH.enterPressed = false;
+
+    }
+
+    public void optionsTop(int frameX, int frameY) {
+        int textX;
+        int textY;
+
+        // TITLE
+        // shadow
+        g2.setFont(mono_bold_48);
+        g2.setColor(darkBlue);
+        String text = "Settings";
+        textX = getXforCenteredText(text);
+        textY = frameY + gp.tileSize + 20;
+        g2.drawString(text, textX, textY);
+
+        // text
+        g2.setColor(Color.white);
+        g2.drawString(text, textX - 4, textY - 4);
+
+        g2.setFont(mono_bold_30);
+        textX = frameX + gp.tileSize;
+
+        // MUSIC
+        textY += gp.tileSize + 20;
+        g2.drawString("Music", textX, textY);
+        if (commandNum == 0) {
+            g2.drawString(">", textX - 35, textY);
+        }
+
+        // SE
+        textY += gp.tileSize;
+        g2.drawString("Sound effects", textX, textY);
+        if (commandNum == 1) {
+            g2.drawString(">", textX - 35, textY);
+        }
+
+        // CONTROL
+        textY += gp.tileSize;
+        g2.drawString("Tutorial", textX, textY);
+        if (commandNum == 2) {
+            g2.drawString(">", textX - 35, textY);
+            if (gp.keyH.enterPressed == true) {
+                subState = 1;
+                commandNum = 0;
+            }
+        }
+
+        // CHANGE PLAYER SKIN
+        textY += gp.tileSize;
+        g2.drawString("Change skin", textX, textY);
+        g2.drawString(gp.ui.getCurrentSkinName(), textX + 260, textY);
+        if (commandNum == 3) {
+            g2.drawString(">", textX - 35, textY);
+        }
+
+        // DIFFICULTY
+        textY += gp.tileSize;
+        g2.drawString("Difficulty", textX, textY);
+        g2.drawString(gp.ui.getCurrentDifficulty(), textX + 260, textY);
+        if (commandNum == 4) {
+            g2.drawString(">", textX - 35, textY);
+        }
+
+        // GO BACK
+        textY += gp.tileSize + 20;
+        g2.drawString("Go back", textX, textY);
+        if (commandNum == 5) {
+            g2.drawString(">", textX - 35, textY);
+            if (gp.keyH.enterPressed == true) {
+                commandNum = 0;
+                gp.gameState = gp.titleState;
+            }
+        }
+
+        // MUSIC
+        textX = frameX + (int) (gp.tileSize * 5.5);
+        textY = frameY + gp.tileSize * 2 + 15;
+        g2.setStroke(new BasicStroke(2));
+        g2.drawRect(textX, textY, 120, gp.tileSize / 2); // 120/5 = 24
+        int volumeWidth = 24 * gp.music.volumeScale;
+        g2.fillRect(textX, textY, volumeWidth, 31);
+
+        // SOUND EFECTS
+        textY += gp.tileSize;
+        g2.drawRect(textX, textY, 120, gp.tileSize / 2);
+        volumeWidth = 24 * gp.se.volumeScale;
+        g2.fillRect(textX, textY, volumeWidth, 31);
+    }
+
+    public void optionsControl(int frameX, int frameY) {
+
+        int textX;
+        int textY;
+
+        // TITLE
+        // shadow
+        g2.setFont(mono_bold_48);
+        g2.setColor(darkBlue);
+        String text = "Tutorial";
+        textX = getXforCenteredText(text);
+        textY = frameY + gp.tileSize + 20;
+        g2.drawString(text, textX, textY);
+
+        // text
+        g2.setColor(Color.white);
+        g2.drawString(text, textX - 4, textY - 4);
+
+        g2.setFont(mono_bold_20);
+        textX = frameX + gp.tileSize;
+
+        textY += gp.tileSize + 20;
+
+        g2.drawString("Move left and right", textX, textY);
+        textY += gp.tileSize / 2;
+        g2.drawString("by pressing arrows.", textX, textY);
+        textY += gp.tileSize;
+        g2.drawString("Avoid trees and collect coins", textX, textY);
+        textY += gp.tileSize / 2;
+        g2.drawString("to gain score.", textX, textY);
+        textY += gp.tileSize;
+
+        g2.setFont(mono_bold_30);
+        g2.setColor(goldColor);
+        g2.drawString("Watch OUT!", textX, textY);
+        textY += gp.tileSize;
+
+        g2.setFont(mono_bold_20);
+        g2.setColor(Color.white);
+        g2.drawString("The more points you get,", textX, textY);
+        textY += gp.tileSize / 2;
+        g2.drawString("the faster you move.", textX, textY);
+        textY += gp.tileSize;
+
+        // BACK
+        textX = frameX + gp.tileSize;
+        g2.drawString("Back", textX, textY);
+        if (commandNum == 0) {
+            g2.drawString(">", textX - 35, textY);
+            if (gp.keyH.enterPressed == true) {
+                subState = 0;
+            }
+        }
+    }
+
+    public void drawPauseScreen() {
+
+        String text;
+
+        g2.setColor(black_50_op);
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        g2.setFont(mono_bold_48);
+        g2.setColor(Color.white);
+
+        text = "PAUSED";
+        int x = getXforCenteredText(text);
+        int y = gp.screenHeight / 2;
+        g2.drawString(text, x, y);
+
+        g2.setFont(mono_bold_24);
+        text = "Press P to resume.";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 50;
+        g2.drawString(text, x, y);
+
+        text = "Press E to EXIT.";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 100;
+        g2.drawString(text, x, y);
+
+    }
+
+    public void drawTitleScreen() {
+
+        // OPAQUE BACKGROUND
+        g2.setColor(black_50_op);
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        // MAIN TITLE
+
+        // shadow
+        g2.setColor(darkBlue);
+        g2.setFont(mono_bold_78);
+        String text = "Downhill OG";
+        int x = getXforCenteredText(text);
+        int y = gp.screenHeight / 2 - 200;
+        g2.drawString(text, x, y);
+
+        // text
+        g2.setColor(Color.white);
+        g2.drawString(text, x - 4, y - 4);
+
+        // START GAME
+        g2.setFont(mono_bold_30);
+        text = "START GAME";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2;
+        g2.drawString(text, x, y);
+        if (commandNum == 0) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
+
+        // SETTINGS
+        text = "SETTINGS";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 50;
+        g2.drawString(text, x, y);
+        if (commandNum == 1) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
+
+        // EXIT
+        text = "EXIT";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 100;
+        g2.drawString(text, x, y);
+        if (commandNum == 2) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
+
+        // pause in game
+        g2.setFont(mono_bold_20);
+        text = "Press P to pause in game, E to exit, ESC to open/close settings.";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 250;
+        g2.drawString(text, x, y);
+
+    }
+
+    public void gameRunning() {
+        // box bound
+        g2.setColor(black_50_op);
+        g2.fillRoundRect(40, 20, 250, 145, 10, 10);
+
+        // score
+        g2.setFont(mono_bold_24);
+        g2.setColor(goldColor);
+        g2.drawImage(coinImage, 50, 20, gp.tileSize, gp.tileSize, null);
+        g2.drawString("Score: " + gp.spawner.getScore(), 110, 60);
+
+        // timer
+        playTime += (double) 1 / 60;
+        g2.setFont(mono_bold_24);
+        g2.setColor(goldColor);
+        g2.drawString("Time: " + dFormat.format(playTime), 66, 104);
+
+        // message coin
+        if (messageOn) {
+            g2.setFont(mono_bold_20);
+            g2.setColor(Color.white);
+            g2.drawString(message, 66, 140);
+            messageCounter++;
+
+            if (messageCounter > 80) {
+                messageCounter = 0;
+                messageOn = false;
+            }
+        }
+    }
+
+    public void gameOver() {
+        g2.setColor(black_50_op);
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        g2.setFont(mono_bold_48);
+        g2.setColor(Color.white);
+
+        String text;
+        int textLength;
+        int x;
+        int y;
+
+        // GAME OVER! YOU HAVE CRASHED!
+
+        // shadow
+        g2.setColor(darkBlue);
+        g2.setFont(mono_bold_58);
+        text = "GAME OVER! YOU HAVE CRASHED!";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 - 150;
+        g2.drawString(text, x, y);
+
+        // text
+        g2.setColor(Color.white);
+        g2.drawString(text, x - 4, y - 4);
+
+        // SCORE
+        g2.setColor(black_50_op);
+        g2.fillRoundRect(gp.screenWidth / 2 - 200, gp.screenHeight / 2 - 45, 400, 120, 20, 20);
+        g2.setFont(mono_bold_35);
+
+        // shadow
+        g2.setColor(darkBlue);
+        text = "Your score: " + gp.spawner.getScore();
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2;
+        g2.drawString(text, x, y);
+
+        // text
+        g2.setColor(Color.white);
+        g2.drawString(text, x - 2, y - 1);
+
+        // TIME
+
+        // shadow
+        g2.setColor(darkBlue);
+
+        text = "Your time: " + dFormat.format(playTime);
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 50;
+        g2.drawString(text, x, y);
+
+        // text
+        g2.setColor(Color.white);
+        g2.drawString(text, x - 2, y - 1);
+
+        // GO HOME
+        g2.setFont(mono_bold_24);
+        text = "Go home";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 150;
+        g2.drawString(text, x, y);
+        if (commandNum == 0) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
+
+        // RESTART GAME
+        text = "Restart game";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 200;
+        g2.drawString(text, x, y);
+        if (commandNum == 1) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
+
+        // EXIT GAME
+        text = "Exit game";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 250;
+        g2.drawString(text, x, y);
+        if (commandNum == 2) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
+    }
+
+    public int getXforCenteredText(String text) {
+        int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+        int x = gp.screenWidth / 2 - length / 2;
+        return x;
+    }
+
+    public String getCurrentSkinName() {
+        return skinNames[skinIndex];
+    }
+
+    public String getCurrentDifficulty() {
+        return difficulty[difficultyIndex];
+    }
+}

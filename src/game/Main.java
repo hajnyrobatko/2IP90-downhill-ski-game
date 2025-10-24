@@ -9,7 +9,7 @@ public class Main {
 
             JFrame window = new JFrame("Downhill OG");
             window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            window.setResizable(true);
+            window.setResizable(false);
 
             GamePanel gamePanel = new GamePanel();
 
@@ -18,7 +18,8 @@ public class Main {
             window.setLocationRelativeTo(null); // centers on screen
             window.setVisible(true);
 
-            gamePanel.startGameThread(); // lllll
+            gamePanel.setupGame();
+            gamePanel.startGameThread();
         });
     }
 }

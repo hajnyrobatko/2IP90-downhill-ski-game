@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 public class Background {
 
     GamePanel gp;
-    public BufferedImage background;
+    public BufferedImage background, scalledBackground;
 
     // how much the screen moved
     private double scrollDefault;
@@ -19,6 +19,7 @@ public class Background {
 
         try {
             background = ImageIO.read(getClass().getResourceAsStream("/assets/images/background/background-image.png"));
+            scalledBackground = scaleImage(background, gp.screenWidth, gp.screenHeight);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -29,14 +30,15 @@ public class Background {
         scrollDefault = 1;
     }
 
-    public void update(double effectiveSpeed) {
+    public void update(double effectiveSpeed, double scrollSpeed) {
 
         // how much the screen moves every frame
-        scrollDefault += effectiveSpeed;
+        scrollDefault += scrollSpeed * effectiveSpeed;
 
         // If scrolled through entire image, back to start
-        if (scrollDefault >= gp.originalHeight)
-            scrollDefault -= gp.originalHeight;
+        if (scrollDefault * gp.scale >= gp.screenHeight) {
+            scrollDefault = 0;
+        }
     }
 
     public void draw(Graphics2D g2) {
@@ -45,11 +47,20 @@ public class Background {
         double mainBgY = scrollDefault * gp.scale;
         double topBgY = mainBgY - gp.screenHeight;
 
+        g2.drawImage(scalledBackground, 0, (int) topBgY, null);
+        g2.drawImage(scalledBackground, 0, (int) mainBgY, null);
+    }
 
-        g2.drawImage(background, 0, (int) topBgY, gp.screenWidth, (int) topBgY + gp.screenHeight, 0, 0, gp.originalWidth,
-                gp.originalHeight, null);
-        g2.drawImage(background, 0, (int) mainBgY, gp.screenWidth, (int) mainBgY + gp.screenHeight, 0, 0, gp.originalWidth,
-                gp.originalHeight, null);
+    private BufferedImage scaleImage(BufferedImage original, int width, int height) {
+
+        BufferedImage scaled = new BufferedImage(width, height, original.getType());
+        Graphics2D g2 = scaled.createGraphics();
+
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2.drawImage(original, 0, 0, width, height, null);
+        g2.dispose();
+        return scaled;
     }
 
     public double getScrollDefault() {
