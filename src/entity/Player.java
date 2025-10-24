@@ -6,13 +6,10 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-
 public class Player extends Entity {
 
     GamePanel gp;
     KeyHandler keyH;
-
-
 
     public Player(GamePanel gp, KeyHandler keyH) {
 
@@ -47,23 +44,27 @@ public class Player extends Entity {
     public void update() {
 
         if (keyH.leftPressed == true) {
-            if (angle > -70){
-            angle -= 2;
-            direction = "right";
+            if (angle > -70) {
+                angle -= 2;
+                direction = "right";
             }
         }
 
         else if (keyH.rightPressed == true) {
-            if (angle < 70){
-            angle += 2;
-            direction = "left";
+            if (angle < 70) {
+                angle += 2;
+                direction = "left";
             }
         }
 
         else if (angle != 0) {
-            angle -= 0.5*(Math.abs(angle)/angle);
+            angle -= 0.5 * (Math.abs(angle) / angle);
             direction = "straight";
         }
+
+        change_x = (int) (10 * (Math.sin(Math.toRadians(angle))));
+        x = x + change_x;
+
         x = gp.border.clampX(x, gp.tileSize);
     }
 
@@ -84,9 +85,7 @@ public class Player extends Entity {
                 image = straight;
                 break;
         }
-        
-        change_x = (int)(10*(Math.sin(Math.toRadians(angle))));
-        x = x + change_x;
+
         var oldTransform = g2.getTransform();
 
         g2.rotate(Math.toRadians(angle), x, y);

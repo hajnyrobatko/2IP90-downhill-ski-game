@@ -14,7 +14,6 @@ public class Sound {
         soundURL[0] = getClass().getResource("/assets/sound/soundtrack.wav");
         soundURL[1] = getClass().getResource("/assets/sound/coin.wav");
         soundURL[2] = getClass().getResource("/assets/sound/game-over.wav");
-
     }
 
     public void setFile(int i) {

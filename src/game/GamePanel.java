@@ -23,8 +23,11 @@ public class GamePanel extends JPanel implements Runnable {
     // FPS
     int FPS = 60;
 
+    // SPEED MULTIPLIER
+    double effectiveSpeed;
+
     // SYSTEM
-    KeyHandler keyH = new KeyHandler();
+    KeyHandler keyH = new KeyHandler(this);
     Sound se = new Sound();
     Sound music = new Sound();
     public CollisionBorder border = new CollisionBorder(300, 1000);
@@ -33,12 +36,16 @@ public class GamePanel extends JPanel implements Runnable {
 
     // ENTITY AND OBJECTS
     Player player = new Player(this, keyH);
-    public ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollDefault() * scale, this);
+    public ObjectSpawner spawner = new ObjectSpawner(300, 1000, screenHeight, background.getScrollDefault() * scale,
+            this);
 
-    double effectiveSpeed;
+    // GAME STATE
+    public int gameState;
+    public final int playState = 1;
+    public final int pauseState = 2;
 
     public UI ui = new UI(this);
-    
+
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setDoubleBuffered(true);
@@ -49,6 +56,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         playMusic(0);
+        gameState = playState;
     }
 
     @Override
@@ -82,17 +90,37 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     protected void update() {
-        effectiveSpeed = (0.05*spawner.getScore()+2) * (Math.cos(Math.toRadians(player.getAngle())));
+        effectiveSpeed = (0.05 * spawner.getScore() + 2) * (Math.cos(Math.toRadians(player.getAngle())));
 
-        background.update(effectiveSpeed);
-        player.update();
-        spawner.update(player.x, player.y, tileSize, tileSize, effectiveSpeed);
+        if (gameState == playState) {
+            player.update();
+            background.update(effectiveSpeed);
+            spawner.update(player.x, player.y, tileSize, tileSize, effectiveSpeed);
+        }
+        if (gameState == pauseState) {
+            // TODO: implement
+        }
+
     }
 
     public void startGameThread() {
 
         gameThread = new Thread(this);
         gameThread.start();
+    }
+
+    public void resetGame() {
+        if (ui.gameOver) {
+            player.setDefaultValues();
+            background.setDefaultValues();
+            effectiveSpeed = 0;
+            ui.gameOver = false;
+            setupGame();
+            spawner.resetObstaclesAndScore();
+            startGameThread();
+            System.out.println("restart game");
+        }
+
     }
 
     @Override

@@ -3,13 +3,19 @@ package game;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class KeyHandler implements KeyListener{
+public class KeyHandler implements KeyListener {
+
+    GamePanel gp;
 
     public boolean leftPressed, rightPressed;
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-        
+    public KeyHandler(GamePanel gp) {
+        this.gp = gp;
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
         int code = e.getKeyCode();
 
         if (code == KeyEvent.VK_LEFT) {
@@ -19,10 +25,26 @@ public class KeyHandler implements KeyListener{
         if (code == KeyEvent.VK_RIGHT) {
             rightPressed = true;
         }
-	}
 
-	@Override
-	public void keyReleased(KeyEvent e) {
+        if (code == KeyEvent.VK_P) {
+            if (gp.gameState == gp.playState) {
+                gp.gameState = gp.pauseState;
+            } else if (gp.gameState == gp.pauseState) {
+                gp.gameState = gp.playState;
+            }
+        }
+
+        if (code == KeyEvent.VK_R) {
+            gp.resetGame();
+        }
+
+        if (code == KeyEvent.VK_E) {
+            System.exit(0);
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
         int code = e.getKeyCode();
 
@@ -33,9 +55,9 @@ public class KeyHandler implements KeyListener{
         if (code == KeyEvent.VK_RIGHT) {
             rightPressed = false;
         }
-	}
+    }
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-	}
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
 }

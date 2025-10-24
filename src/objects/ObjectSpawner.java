@@ -22,9 +22,6 @@ public class ObjectSpawner {
     private BufferedImage goldCoin, silverCoin, tree, goldCoinIcon;
 
     GamePanel gp;
-
-    public boolean gameEnd = false;
-
     public int score = 0;
 
     public ObjectSpawner(int leftLine, int rightLine, int screenHeight, double scrollSpeed, GamePanel gp) {
@@ -41,7 +38,8 @@ public class ObjectSpawner {
 
         try {
             goldCoin = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-5.png"));
-            goldCoinIcon = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-icon.png"));
+            goldCoinIcon = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/objects/gold-coin/gold-coin-icon.png"));
             silverCoin = ImageIO
                     .read(getClass().getResourceAsStream("/assets/images/objects/silver-coin/silver-coin-5.png"));
             tree = ImageIO.read(getClass().getResourceAsStream("/assets/images/objects/trees/tree-4.png"));
@@ -68,7 +66,8 @@ public class ObjectSpawner {
 
         // spawn randomly
 
-        //TODO: if effective speed is less than something spawn this much and if more spawn more
+        // TODO: if effective speed is less than something spawn this much and if more
+        // spawn more
 
         spawnObject(180, "goldCoin", goldCoin);
         spawnObject(80, "silverCoin", silverCoin);
@@ -77,8 +76,8 @@ public class ObjectSpawner {
         // move down + check collisions
         for (int i = 0; i < obstacles.size(); i++) {
             Obstacle obstacle = obstacles.get(i);
-            obstacle.y += this.scrollSpeed*(effectiveSpeed); // plus effective speed
-            
+            obstacle.y += this.scrollSpeed * (effectiveSpeed); // plus effective speed
+
             boolean removeThis = false;
 
             if (collidesWithPlayer(obstacle, playerX, playerY, playerWidth, playerHeight)) {
@@ -115,7 +114,6 @@ public class ObjectSpawner {
         }
     }
 
-
     public void draw(Graphics2D g) {
         for (Obstacle o : obstacles) {
             g.drawImage(o.img, o.x, (int) o.y, null);
@@ -137,6 +135,11 @@ public class ObjectSpawner {
         int minX = leftLine;
         int maxX = rightLine - objectWidth;
         return random.nextInt(maxX - minX + 1) + minX;
+    }
+
+    public void resetObstaclesAndScore() {
+        this.obstacles.clear();
+        this.score = 0;
     }
 
     public int getScore() {
