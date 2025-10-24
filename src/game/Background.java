@@ -55,7 +55,7 @@ public class Background {
 
         BufferedImage scaled = new BufferedImage(width, height, original.getType());
         Graphics2D g2 = scaled.createGraphics();
-        
+
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2.drawImage(original, 0, 0, width, height, null);

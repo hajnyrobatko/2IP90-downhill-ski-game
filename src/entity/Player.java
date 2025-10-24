@@ -32,12 +32,51 @@ public class Player extends Entity {
     public void getPlayerImage() {
 
         try {
-            straight = ImageIO.read(getClass().getResourceAsStream("/assets/images/skier/skier-straight.png"));
-            left = ImageIO.read(getClass().getResourceAsStream("/assets/images/skier/skier-turn-left.png"));
-            right = ImageIO.read(getClass().getResourceAsStream("/assets/images/skier/skier-turn-right.png"));
+            straightDefault = ImageIO.read(
+                    getClass().getResourceAsStream("/assets/images/skier/skier-default/skier-default-straight.png"));
+            leftDefault = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-default/skier-default-left.png"));
+            rightDefault = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-default/skier-default-right.png"));
+
+            straightDune = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-dune/skier-dune-straight.png"));
+            leftDune = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-dune/skier-dune-left.png"));
+            rightDune = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-dune/skier-dune-right.png"));
+
+            straightNeon = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-neon/skier-neon-straight.png"));
+            leftNeon = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-neon/skier-neon-left.png"));
+            rightNeon = ImageIO
+                    .read(getClass().getResourceAsStream("/assets/images/skier/skier-neon/skier-neon-right.png"));
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void setSkin() {
+        String skinName = gp.ui.getCurrentSkinName();
+
+        switch (skinName) {
+            case "Default":
+                straight = straightDefault;
+                left = leftDefault;
+                right = rightDefault;
+                break;
+            case "Dune":
+                straight = straightDune;
+                left = leftDune;
+                right = rightDune;
+                break;
+            case "Neon":
+                straight = straightNeon;
+                left = leftNeon;
+                right = rightNeon;
+                break;
         }
     }
 

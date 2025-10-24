@@ -65,13 +65,28 @@ public class ObjectSpawner {
     public void update(int playerX, int playerY, int playerWidth, int playerHeight, double effectiveSpeed) {
 
         // spawn randomly
+        String difficulty = gp.ui.getCurrentDifficulty();
 
-        // TODO: if effective speed is less than something spawn this much and if more
-        // spawn more
+        switch (difficulty) {
+            case "Easy":
+                spawnObject(120, "goldCoin", goldCoin);
+                spawnObject(60, "silverCoin", silverCoin);
+                spawnObject(220, "tree", tree);
+                break;
 
-        spawnObject(180, "goldCoin", goldCoin);
-        spawnObject(80, "silverCoin", silverCoin);
-        spawnObject(180, "tree", tree);
+            // default
+            case "Medium":
+                spawnObject(180, "goldCoin", goldCoin);
+                spawnObject(80, "silverCoin", silverCoin);
+                spawnObject(180, "tree", tree);
+
+                break;
+            case "Pro":
+                spawnObject(60, "goldCoin", goldCoin);
+                spawnObject(60, "silverCoin", silverCoin);
+                spawnObject(30, "tree", tree);
+                break;
+        }
 
         // move down + check collisions
         for (int i = 0; i < obstacles.size(); i++) {

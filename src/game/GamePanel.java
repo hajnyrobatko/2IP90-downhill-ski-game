@@ -25,6 +25,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     // SPEED MULTIPLIER
     double effectiveSpeed;
+    public double speedMultiplier = 0.05;
+    public double baseSpeed = 2.0;
 
     // SYSTEM
     KeyHandler keyH = new KeyHandler(this);
@@ -47,6 +49,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int gameOverState = 3;
     public final int optionsState = 4;
 
+    // UI
     public UI ui = new UI(this);
 
     public GamePanel() {
@@ -59,6 +62,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         gameState = titleState;
+        player.setSkin();
+        setDifficulty();
     }
 
     @Override
@@ -107,7 +112,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     protected void update() {
-        effectiveSpeed = (0.05 * spawner.getScore() + 2) * (Math.cos(Math.toRadians(player.getAngle())));
+        effectiveSpeed = (speedMultiplier * spawner.getScore() + baseSpeed) * (Math.cos(Math.toRadians(player.getAngle())));
 
         if (gameState == playState) {
             player.update();
@@ -115,7 +120,6 @@ public class GamePanel extends JPanel implements Runnable {
             spawner.update(player.x, player.y, tileSize, tileSize, effectiveSpeed);
         }
         else if (gameState == pauseState) {
-            // TODO: implement
         }
 
         else if (gameState == titleState) {
@@ -124,7 +128,26 @@ public class GamePanel extends JPanel implements Runnable {
         else if (gameState == optionsState) {
             background.update(effectiveSpeed, 0.2);
         }
+    }
 
+    public void setDifficulty() {
+        String difficulty = ui.getCurrentDifficulty();
+
+        switch (difficulty) {
+            case "Easy":
+                speedMultiplier = 0.03;
+                baseSpeed = 1.5;
+                break;
+                // default
+            case "Medium":
+                speedMultiplier = 0.05;
+                baseSpeed = 2;
+                break;
+            case "Pro":
+                speedMultiplier = 0.08;
+                baseSpeed = 2.5;
+                break;
+        }
     }
 
     public void startGameThread() {
@@ -142,7 +165,6 @@ public class GamePanel extends JPanel implements Runnable {
             spawner.resetObstaclesAndScore();
             System.out.println("restart game");
         }
-
     }
 
     @Override

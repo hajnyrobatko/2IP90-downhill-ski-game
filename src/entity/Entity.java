@@ -8,6 +8,10 @@ public class Entity {
     public int speed;
     public int angle;
 
+    public BufferedImage straightDefault, leftDefault, rightDefault;
+    public BufferedImage straightNeon, leftNeon, rightNeon;
+    public BufferedImage straightDune, leftDune, rightDune;
+
     public BufferedImage straight, left, right;
     public String direction;
 }

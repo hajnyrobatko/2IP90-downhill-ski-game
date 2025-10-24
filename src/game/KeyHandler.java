@@ -152,6 +152,7 @@ public class KeyHandler implements KeyListener {
                 }
             }
 
+            // MUSIC AND SE
             if (code == KeyEvent.VK_LEFT) {
                 if (gp.ui.subState == 0) {
                     if (gp.ui.commandNum == 0 && gp.music.volumeScale > 0) {
@@ -172,8 +173,54 @@ public class KeyHandler implements KeyListener {
                     }
                     if (gp.ui.commandNum == 1 && gp.se.volumeScale < 5) {
                         gp.se.volumeScale++;
-                        gp.playSE(3);                        
+                        gp.playSE(3);
                     }
+                }
+            }
+
+            // CHANGE SKIN
+            if (code == KeyEvent.VK_LEFT) {
+                if (gp.ui.commandNum == 3) {
+                    gp.ui.skinIndex--;
+                    if (gp.ui.skinIndex < 0) {
+                        gp.ui.skinIndex = gp.ui.skinNames.length - 1;
+                    }
+                    gp.player.setSkin();
+                    gp.playSE(3);
+                }
+            }
+
+            if (code == KeyEvent.VK_RIGHT) {
+                if (gp.ui.commandNum == 3) {
+                    gp.ui.skinIndex++;
+                    if (gp.ui.skinIndex >= gp.ui.skinNames.length) {
+                        gp.ui.skinIndex = 0;
+                    }
+                    gp.player.setSkin();
+                    gp.playSE(3);
+                }
+            }
+            
+            // CHANGE DIFFICULTY
+            if (code == KeyEvent.VK_LEFT) {
+                if (gp.ui.commandNum == 4) {
+                    gp.ui.difficultyIndex--;
+                    if (gp.ui.difficultyIndex < 0) {
+                        gp.ui.difficultyIndex = gp.ui.difficulty.length - 1;
+                    }
+                    gp.playSE(3);
+                    gp.setDifficulty();
+                }
+            }
+
+            if (code == KeyEvent.VK_RIGHT) {
+                if (gp.ui.commandNum == 4) {
+                    gp.ui.difficultyIndex++;
+                    if (gp.ui.difficultyIndex >= gp.ui.difficulty.length) {
+                        gp.ui.difficultyIndex = 0;
+                    }
+                    gp.playSE(3);
+                    gp.setDifficulty();
                 }
             }
         }

@@ -27,6 +27,12 @@ public class UI {
     DecimalFormat dFormat = new DecimalFormat("#0.00");
     public int commandNum = 0;
 
+    public String[] skinNames = { "Default", "Dune", "Neon" };
+    public int skinIndex = 0;
+
+    public String[] difficulty = { "Easy", "Medium", "Pro" };
+    public int difficultyIndex = 1;
+
     int subState = 0;
 
     public UI(GamePanel gp) {
@@ -112,15 +118,18 @@ public class UI {
         g2.fillRect(frameX, frameY, frameWidth, frameHeight);
 
         switch (subState) {
-            case 0: optionsTop(frameX, frameY);
+            case 0:
+                optionsTop(frameX, frameY);
                 break;
-            case 1: optionsControl(frameX, frameY);
+            case 1:
+                optionsControl(frameX, frameY);
                 break;
         }
 
         gp.keyH.enterPressed = false;
 
     }
+
     public void optionsTop(int frameX, int frameY) {
         int textX;
         int textY;
@@ -137,7 +146,7 @@ public class UI {
         // text
         g2.setColor(Color.white);
         g2.drawString(text, textX - 4, textY - 4);
-        
+
         g2.setFont(mono_bold_30);
         textX = frameX + gp.tileSize;
 
@@ -160,7 +169,7 @@ public class UI {
         g2.drawString("Tutorial", textX, textY);
         if (commandNum == 2) {
             g2.drawString(">", textX - 35, textY);
-            if(gp.keyH.enterPressed == true) {
+            if (gp.keyH.enterPressed == true) {
                 subState = 1;
                 commandNum = 0;
             }
@@ -169,6 +178,7 @@ public class UI {
         // CHANGE PLAYER SKIN
         textY += gp.tileSize;
         g2.drawString("Change skin", textX, textY);
+        g2.drawString(gp.ui.getCurrentSkinName(), textX + 260, textY);
         if (commandNum == 3) {
             g2.drawString(">", textX - 35, textY);
         }
@@ -176,6 +186,7 @@ public class UI {
         // DIFFICULTY
         textY += gp.tileSize;
         g2.drawString("Difficulty", textX, textY);
+        g2.drawString(gp.ui.getCurrentDifficulty(), textX + 260, textY);
         if (commandNum == 4) {
             g2.drawString(">", textX - 35, textY);
         }
@@ -185,7 +196,7 @@ public class UI {
         g2.drawString("Go back", textX, textY);
         if (commandNum == 5) {
             g2.drawString(">", textX - 35, textY);
-            if(gp.keyH.enterPressed == true) {
+            if (gp.keyH.enterPressed == true) {
                 commandNum = 0;
                 gp.gameState = gp.titleState;
             }
@@ -195,13 +206,13 @@ public class UI {
         textX = frameX + (int) (gp.tileSize * 5.5);
         textY = frameY + gp.tileSize * 2 + 15;
         g2.setStroke(new BasicStroke(2));
-        g2.drawRect(textX, textY, 120, gp. tileSize / 2); // 120/5 = 24
+        g2.drawRect(textX, textY, 120, gp.tileSize / 2); // 120/5 = 24
         int volumeWidth = 24 * gp.music.volumeScale;
         g2.fillRect(textX, textY, volumeWidth, 31);
 
         // SOUND EFECTS
         textY += gp.tileSize;
-        g2.drawRect(textX, textY, 120, gp. tileSize / 2);
+        g2.drawRect(textX, textY, 120, gp.tileSize / 2);
         volumeWidth = 24 * gp.se.volumeScale;
         g2.fillRect(textX, textY, volumeWidth, 31);
     }
@@ -223,32 +234,39 @@ public class UI {
         // text
         g2.setColor(Color.white);
         g2.drawString(text, textX - 4, textY - 4);
-        
+
         g2.setFont(mono_bold_20);
         textX = frameX + gp.tileSize;
 
         textY += gp.tileSize + 20;
 
-        g2.drawString("Move left and right", textX, textY); textY += gp.tileSize / 2;
-        g2.drawString("by pressing arrows.", textX, textY); textY += gp.tileSize;
-        g2.drawString("Avoid trees and collect coins", textX, textY); textY += gp.tileSize / 2;
-        g2.drawString("to gain score.", textX, textY); textY += gp.tileSize;
+        g2.drawString("Move left and right", textX, textY);
+        textY += gp.tileSize / 2;
+        g2.drawString("by pressing arrows.", textX, textY);
+        textY += gp.tileSize;
+        g2.drawString("Avoid trees and collect coins", textX, textY);
+        textY += gp.tileSize / 2;
+        g2.drawString("to gain score.", textX, textY);
+        textY += gp.tileSize;
 
         g2.setFont(mono_bold_30);
         g2.setColor(goldColor);
-        g2.drawString("Watch OUT!", textX, textY); textY += gp.tileSize;
+        g2.drawString("Watch OUT!", textX, textY);
+        textY += gp.tileSize;
 
         g2.setFont(mono_bold_20);
         g2.setColor(Color.white);
-        g2.drawString("The more points you get,", textX, textY); textY += gp.tileSize / 2;
-        g2.drawString("the faster you move.", textX, textY); textY += gp.tileSize;
+        g2.drawString("The more points you get,", textX, textY);
+        textY += gp.tileSize / 2;
+        g2.drawString("the faster you move.", textX, textY);
+        textY += gp.tileSize;
 
         // BACK
         textX = frameX + gp.tileSize;
         g2.drawString("Back", textX, textY);
-        if(commandNum == 0) {
+        if (commandNum == 0) {
             g2.drawString(">", textX - 35, textY);
-            if(gp.keyH.enterPressed == true) {
+            if (gp.keyH.enterPressed == true) {
                 subState = 0;
             }
         }
@@ -459,5 +477,13 @@ public class UI {
         int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
         int x = gp.screenWidth / 2 - length / 2;
         return x;
+    }
+
+    public String getCurrentSkinName() {
+        return skinNames[skinIndex];
+    }
+
+    public String getCurrentDifficulty() {
+        return difficulty[difficultyIndex];
     }
 }
