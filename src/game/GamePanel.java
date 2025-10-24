@@ -41,8 +41,10 @@ public class GamePanel extends JPanel implements Runnable {
 
     // GAME STATE
     public int gameState;
+    public final int titleState = 0;
     public final int playState = 1;
     public final int pauseState = 2;
+    public final int gameOverState = 3;
 
     public UI ui = new UI(this);
 
@@ -55,21 +57,27 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void setupGame() {
-        playMusic(0);
-        gameState = playState;
+        gameState = titleState;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
 
         super.paintComponent(g);
-
         Graphics2D g2 = (Graphics2D) g;
 
-        background.draw(g2);
-        player.draw(g2);
-        spawner.draw(g2);
-        ui.draw(g2);
+        // TITLE SCREEN
+        if (gameState == titleState) {
+            background.draw(g2);
+            ui.draw(g2);
+
+        // GAME SCREEN, PAUSE, ETC.
+        } else {
+            background.draw(g2);
+            player.draw(g2);
+            spawner.draw(g2);
+            ui.draw(g2);
+        }
 
         g2.dispose();
     }
@@ -94,10 +102,15 @@ public class GamePanel extends JPanel implements Runnable {
 
         if (gameState == playState) {
             player.update();
-            background.update(effectiveSpeed);
+            background.update(effectiveSpeed, 1);
             spawner.update(player.x, player.y, tileSize, tileSize, effectiveSpeed);
         }
         if (gameState == pauseState) {
+            // TODO: implement
+        }
+
+        if (gameState == titleState) {
+            background.update(effectiveSpeed, 0.2);
             // TODO: implement
         }
 
@@ -115,9 +128,7 @@ public class GamePanel extends JPanel implements Runnable {
             background.setDefaultValues();
             effectiveSpeed = 0;
             ui.gameOver = false;
-            setupGame();
             spawner.resetObstaclesAndScore();
-            startGameThread();
             System.out.println("restart game");
         }
 

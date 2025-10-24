@@ -18,29 +18,113 @@ public class KeyHandler implements KeyListener {
 
         int code = e.getKeyCode();
 
-        if (code == KeyEvent.VK_LEFT) {
-            leftPressed = true;
+        // TITLE STATE
+        if (gp.gameState == gp.titleState) {
+
+            if (code == KeyEvent.VK_UP) {
+                gp.ui.commandNum--;
+                if (gp.ui.commandNum < 0) {
+                    gp.ui.commandNum = 2;
+                }
+            }
+
+            if (code == KeyEvent.VK_DOWN) {
+                gp.ui.commandNum++;
+                if (gp.ui.commandNum > 2) {
+                    gp.ui.commandNum = 0;
+                }
+            }
+
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandNum == 0) {
+                    gp.gameState = gp.playState;
+                    gp.playMusic(0);
+                }
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandNum == 1) {
+                    // TODO: Settings
+                }
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandNum == 2) {
+                    System.exit(0);
+                }
+            }
+
         }
 
-        if (code == KeyEvent.VK_RIGHT) {
-            rightPressed = true;
+        // GAME AND PAUSE STATE
+        if (gp.gameState == gp.playState || gp.gameState == gp.pauseState) {
+            if (code == KeyEvent.VK_LEFT) {
+                leftPressed = true;
+            }
+
+            if (code == KeyEvent.VK_RIGHT) {
+                rightPressed = true;
+            }
+
+            if (code == KeyEvent.VK_P) {
+                if (gp.gameState == gp.playState) {
+                    gp.gameState = gp.pauseState;
+                    gp.stopMusic();
+                } else if (gp.gameState == gp.pauseState) {
+                    gp.gameState = gp.playState;
+                    gp.playMusic(0);
+                }
+            }
+
+            if (code == KeyEvent.VK_R) {
+                gp.resetGame();
+            }
+
         }
 
-        if (code == KeyEvent.VK_P) {
-            if (gp.gameState == gp.playState) {
-                gp.gameState = gp.pauseState;
-            } else if (gp.gameState == gp.pauseState) {
-                gp.gameState = gp.playState;
+        if (gp.gameState == gp.gameOverState) {
+            if (code == KeyEvent.VK_UP) {
+                gp.ui.commandNum--;
+                if (gp.ui.commandNum < 0) {
+                    gp.ui.commandNum = 2;
+                }
+            }
+
+            if (code == KeyEvent.VK_DOWN) {
+                gp.ui.commandNum++;
+                if (gp.ui.commandNum > 2) {
+                    gp.ui.commandNum = 0;
+                }
+            }
+
+            // go home reset everything
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandNum == 0) {
+                    gp.gameState = gp.titleState;
+                    gp.resetGame();
+                }
+            }
+            
+            // reset game
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandNum == 1) {
+                    gp.gameState = gp.playState;
+                    gp.resetGame();
+                    gp.playMusic(0);
+                }
+
+            // exit 
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandNum == 2) {
+                    System.exit(0);
+                }
             }
         }
+    }
 
-        if (code == KeyEvent.VK_R) {
-            gp.resetGame();
-        }
-
+        // WORKS EVERYWHERE
         if (code == KeyEvent.VK_E) {
             System.exit(0);
         }
+
     }
 
     @Override

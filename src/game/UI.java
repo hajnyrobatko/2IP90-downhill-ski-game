@@ -14,29 +14,33 @@ public class UI {
     GamePanel gp;
     Graphics2D g2;
     Font base_mono_reg, base_mono_bold;
-    Font mono_bold_48, mono_bold_24, mono_bold_30, mono_bold_20;
+    Font mono_bold_78, mono_bold_58, mono_bold_48, mono_bold_24, mono_bold_30, mono_bold_20, mono_bold_35;
     BufferedImage coinImage;
-    Color goldColor, black_50_op;
+    Color goldColor, black_50_op, darkBlue;
 
     public boolean messageOn = false;
     public String message = "";
     int messageCounter;
     public boolean gameOver = false;
-
     double playTime;
     DecimalFormat dFormat = new DecimalFormat("#0.00");
+    public int commandNum = 0;
 
     public UI(GamePanel gp) {
         this.gp = gp;
         loadFonts();
 
+        mono_bold_78 = base_mono_bold.deriveFont(78f);
+        mono_bold_58 = base_mono_bold.deriveFont(58f);
         mono_bold_48 = base_mono_bold.deriveFont(48f);
+        mono_bold_35 = base_mono_bold.deriveFont(35f);
         mono_bold_24 = base_mono_bold.deriveFont(24f);
         mono_bold_30 = base_mono_bold.deriveFont(30f);
         mono_bold_20 = base_mono_bold.deriveFont(20f);
 
         goldColor = new Color(245, 219, 56);
         black_50_op = new Color(0, 0, 0, 128);
+        darkBlue = new Color(48, 67, 88);
 
         coinImage = gp.spawner.getGoldCoinImage();
 
@@ -70,15 +74,17 @@ public class UI {
         this.g2 = g2;
 
         if (gp.gameState == gp.playState) {
-            if (gameOver == true) {
-                gameOver();
-            } else {
-                gameRunning();
-            }
+            gameRunning();
+        }
+        if (gp.gameState == gp.gameOverState) {
+            gameOver();
         }
 
         if (gp.gameState == gp.pauseState) {
             drawPauseScreen();
+        }
+        if (gp.gameState == gp.titleState) {
+            drawTitleScreen();
         }
     }
 
@@ -106,6 +112,63 @@ public class UI {
         text = "Press E to EXIT.";
         x = getXforCenteredText(text);
         y = gp.screenHeight / 2 + 100;
+        g2.drawString(text, x, y);
+
+    }
+
+    public void drawTitleScreen() {
+
+        // OPAQUE BACKGROUND
+        g2.setColor(black_50_op);
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+
+        // MAIN TITLE
+
+        // shadow
+        g2.setColor(darkBlue);
+        g2.setFont(mono_bold_78);
+        String text = "Downhill OG";
+        int x = getXforCenteredText(text);
+        int y = gp.screenHeight / 2 - 200;
+        g2.drawString(text, x, y);
+
+        // text
+        g2.setColor(Color.white);
+        g2.drawString(text, x - 4, y - 4);
+
+        // START GAME
+        g2.setFont(mono_bold_30);
+        text = "START GAME";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2;
+        g2.drawString(text, x, y);
+        if (commandNum == 0) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
+
+        // SETTINGS
+        text = "SETTINGS";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 50;
+        g2.drawString(text, x, y);
+        if (commandNum == 1) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
+
+        // EXIT
+        text = "EXIT";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 100;
+        g2.drawString(text, x, y);
+        if (commandNum == 2) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
+
+        // pause in game
+        g2.setFont(mono_bold_20);
+        text = "Press P to pause in game, E to exit.";
+        x = getXforCenteredText(text);
+        y = gp.screenHeight / 2 + 250;
         g2.drawString(text, x, y);
 
     }
@@ -156,48 +219,77 @@ public class UI {
         // GAME OVER! YOU HAVE CRASHED!
 
         // shadow
-        g2.setColor(Color.black);
+        g2.setColor(darkBlue);
+        g2.setFont(mono_bold_58);
         text = "GAME OVER! YOU HAVE CRASHED!";
         x = getXforCenteredText(text);
-        y = gp.screenHeight / 2 - 50;
+        y = gp.screenHeight / 2 - 150;
         g2.drawString(text, x, y);
 
+        // text
         g2.setColor(Color.white);
         g2.drawString(text, x - 4, y - 4);
 
         // SCORE
-        g2.setFont(mono_bold_30);
+        g2.setColor(black_50_op);
+        g2.fillRoundRect(gp.screenWidth / 2 - 200, gp.screenHeight / 2 - 45, 400, 120, 20, 20);
+        g2.setFont(mono_bold_35);
+
+        // shadow
+        g2.setColor(darkBlue);
         text = "Your score: " + gp.spawner.getScore();
         x = getXforCenteredText(text);
-        y = gp.screenHeight / 2 + 25;
+        y = gp.screenHeight / 2;
         g2.drawString(text, x, y);
+
+        // text
+        g2.setColor(Color.white);
+        g2.drawString(text, x - 2, y - 1);
 
         // TIME
+
+        // shadow
+        g2.setColor(darkBlue);
+
         text = "Your time: " + dFormat.format(playTime);
         x = getXforCenteredText(text);
-        y = gp.screenHeight / 2 + 75;
+        y = gp.screenHeight / 2 + 50;
         g2.drawString(text, x, y);
 
-        // RESTART (press R)
+        // text
+        g2.setColor(Color.white);
+        g2.drawString(text, x - 2, y - 1);
+
+        // GO HOME
         g2.setFont(mono_bold_24);
-        text = "To restart, press R";
+        text = "Go home";
         x = getXforCenteredText(text);
         y = gp.screenHeight / 2 + 150;
         g2.drawString(text, x, y);
+        if (commandNum == 0) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
 
-        // GET BACK TO TITLE SCREEN
-        text = "To go back HOME, press B";
+        // RESTART GAME
+        text = "Restart game";
         x = getXforCenteredText(text);
         y = gp.screenHeight / 2 + 200;
         g2.drawString(text, x, y);
+        if (commandNum == 1) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
 
-        // E to exit
-        text = "Press E to EXIT.";
+        // EXIT GAME
+        text = "Exit game";
         x = getXforCenteredText(text);
         y = gp.screenHeight / 2 + 250;
         g2.drawString(text, x, y);
+        if (commandNum == 2) {
+            g2.drawString(">", x - gp.tileSize / 2, y);
+        }
 
-        gp.gameThread = null;
+        // gp.gameThread = null;
+        // cannot do this, stop everything but cant stop game loop
     }
 
     public int getXforCenteredText(String text) {

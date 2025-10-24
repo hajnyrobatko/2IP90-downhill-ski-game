@@ -98,6 +98,7 @@ public class ObjectSpawner {
 
                 } else if ("tree".equals(obstacle.getType())) {
                     gp.ui.gameOver = true;
+                    gp.gameState = gp.gameOverState;
                     gp.stopMusic();
                     gp.playSE(2);
                 }
